@@ -42,7 +42,7 @@ LOG.parent.mkdir(parents=True, exist_ok=True)
 
 OWNER_REPO = "gdpujee/bcrt-immune-metabolic-score"
 REPO_URL = f"https://github.com/{OWNER_REPO}"
-CONCEPT_DOI = "10.5281/zenodo.22961119"
+CONCEPT_DOI = "10.5281/zenodo.22994650"
 CONCEPT_RECORD = CONCEPT_DOI.rsplit(".", 1)[1]
 MANIFEST = ROOT / "dist/public_release.manifest.json"
 

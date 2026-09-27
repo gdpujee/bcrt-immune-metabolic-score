@@ -127,7 +127,7 @@ GENERATED = ("MANIFEST.sha256",)
 MAX_BYTES = 5_000_000
 MIN_FILES = 100
 
-CONCEPT_DOI = "10.5281/zenodo.22961119"
+CONCEPT_DOI = "10.5281/zenodo.22994650"
 
 # The only e-mail addresses that may appear in the public release are the two
 # authors' own: both are printed on the manuscript's title page and in the

@@ -468,7 +468,7 @@ check("submission_bcrt holds only uploadable files", not strays, str(strays))
 # one that is actually live, or the archive is cited by a VERSION DOI — which pins
 # a single release, and the release that existed when this was written no longer
 # matched the manuscript.  Asserted in every rendered format, not just the source.
-CONCEPT_DOI = "10.5281/zenodo.22961119"
+CONCEPT_DOI = "10.5281/zenodo.22994650"
 REPO_URL = "https://github.com/gdpujee/bcrt-immune-metabolic-score"
 DOI_FILES = ["manuscript_submission.md", "declarations.md", "supplement.md",
              "Supplementary_Information.pdf", "manuscript_final.pdf",

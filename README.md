@@ -4,10 +4,8 @@ Analysis code and derived data tables for the manuscript *Cross-platform externa
 validation of an immune–metabolic transcriptional score for breast cancer overall
 survival*, submitted to *Breast Cancer Research and Treatment*.
 
-**Archived release (concept DOI): [10.5281/zenodo.22961119](https://doi.org/10.5281/zenodo.22961119)**
-— a concept DOI always resolves to the most recent version, which is the one that
-matches the submitted manuscript. Cite it rather than a version DOI, so a reader
-never lands on a superseded archive.
+**Archived release (version DOI): [10.5281/zenodo.22995292](https://doi.org/10.5281/zenodo.22995292)**
+*(Concept DOI for all versions: [10.5281/zenodo.22994650](https://doi.org/10.5281/zenodo.22994650))*
 
 ## What the analysis does
 
