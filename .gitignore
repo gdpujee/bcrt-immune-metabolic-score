@@ -1,0 +1,18 @@
+data/raw/*
+!data/raw/.gitkeep
+*.gz
+*.cel
+__pycache__/
+.venv/
+*.pyc
+.DS_Store
+logs/*
+!logs/.gitkeep
+manuscript/latex/*.aux
+manuscript/latex/*.log
+manuscript/latex/*.out
+manuscript/latex/*.xdv
+
+# Public-release export target, rebuilt by scripts/47_export_public_release.py.
+# It is a copy of tracked files, so tracking it would duplicate the repository.
+dist/

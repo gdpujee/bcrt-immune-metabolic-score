@@ -101,7 +101,7 @@ ALLOW_DIRS = ("scripts", "results", "figures", "tables")
 # release; before them the archived record had no licence, no description, no
 # keywords, and listed the GitHub login `gdpu11` as the creator.
 ALLOW_FILES = ("requirements.txt", "ENVIRONMENT.md", "LICENSE", "CITATION.cff",
-               ".zenodo.json", "README.md", ".gitignore")
+               ".zenodo.json", "README.md", ".gitignore", "MODEL_LOCK_MANIFEST.md")
 
 # Off by default.  Posting the paper is a preprint decision that belongs to the
 # authors, and the data-availability statement only promises code, pipeline

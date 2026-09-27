@@ -38,8 +38,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 LOG = ROOT / "logs/public_release_audit.log"
+LOG.parent.mkdir(parents=True, exist_ok=True)
 
-OWNER_REPO = "gdpu11/breast-cancer-immune-metabolic-score"
+OWNER_REPO = "gdpujee/bcrt-immune-metabolic-score"
 REPO_URL = f"https://github.com/{OWNER_REPO}"
 CONCEPT_DOI = "10.5281/zenodo.22961119"
 CONCEPT_RECORD = CONCEPT_DOI.rsplit(".", 1)[1]

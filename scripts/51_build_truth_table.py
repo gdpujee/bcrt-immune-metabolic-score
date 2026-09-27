@@ -140,8 +140,11 @@ log(f"WROTE tables/TruthTable_transportability.md ({len(rows)} rows)")
 # ---- cross-document checks -------------------------------------------------
 # (label, document key, expected substring). Each document is checked against the
 # exact rendering it uses: Table 3 is a TSV, the response letter uses en-dashes.
-docs = {"ms": (MS, MS.read_text()), "sup": (SUP, SUP.read_text()),
-        "tab3": (TAB3, TAB3.read_text())}
+docs = {"tab3": (TAB3, TAB3.read_text())}
+if MS.exists():
+    docs["ms"] = (MS, MS.read_text())
+if SUP.exists():
+    docs["sup"] = (SUP, SUP.read_text())
 if RESP.exists():
     docs["resp"] = (RESP, RESP.read_text())
 
