@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use this analysis code or the derived data tables, please cite the archived release (concept DOI below) and the associated article."
+message: "If you use this analysis code or the derived data tables, please cite the archived release (version DOI below) and the associated article."
 type: software
 title: "Cross-platform external validation of an immune-metabolic transcriptional score for breast cancer overall survival: analysis code and derived data"
 abstract: >-
