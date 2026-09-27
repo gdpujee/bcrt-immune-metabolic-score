@@ -1,0 +1,4 @@
+Cohort	n tumors	n normals	OS events	Median OS (y)	Platform	PMID
+GSE42568 train	104	17	35	6.0	GPL570	23740839
+GSE20685 validation	327	0	83	8.1	GPL570	21501481
+GSE45827 biology	130	11	0	NA	GPL570	27006338

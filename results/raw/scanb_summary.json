@@ -1,0 +1,17 @@
+{
+  "n_soft": 3409,
+  "n_parsed_rows_unique_by_id": 3409,
+  "n_id_duplicates_excluded": 0,
+  "n_repl_tagged_retained": 136,
+  "n_norepl_titles": 3273,
+  "n_deaths": 353,
+  "n_censored": 3056,
+  "median_years": 4.369609856262834,
+  "key": "scan_b_external_id",
+  "pmids": [
+    "32913985",
+    "32926574",
+    "33937624",
+    "35304506"
+  ]
+}

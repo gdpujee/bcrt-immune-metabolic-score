@@ -1,0 +1,7 @@
+cohort	group	n	atrisk_0y	atrisk_1y	atrisk_2y	atrisk_3y	atrisk_4y	atrisk_5y
+train	High	52	52	47	38	29	23	21
+train	Low	52	52	52	52	49	47	43
+valid	High	48	48	47	41	36	34	33
+valid	Low	279	279	276	266	259	250	238
+rnaseq	High	156	156	151	142	117	75	41
+rnaseq	Low	3117	3117	3093	3029	2598	1881	1130

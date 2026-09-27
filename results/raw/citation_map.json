@@ -1,0 +1,23 @@
+{
+ "numbering": {
+  "COLLINS2014": 1,
+  "ALTMAN2000": 2,
+  "PARKER2009": 3,
+  "METABSIG": 4,
+  "WIRAPATI": 5,
+  "COREPAM": 6,
+  "BCRT_TNBC": 7,
+  "GSE42568": 8,
+  "GSE20685": 9,
+  "GSE45827": 10,
+  "SCANB": 11,
+  "CURTIS2012": 12,
+  "PEREIRA2016": 13,
+  "GAO2013": 14,
+  "KEGG": 15,
+  "NIELSEN2014": 16,
+  "MCSHANE2005": 17,
+  "REMARK2023": 18,
+  "JUSTICE1999": 19
+ }
+}

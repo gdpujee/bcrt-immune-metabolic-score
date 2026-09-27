@@ -1,0 +1,24 @@
+{
+  "method": "statsmodels PHReg, per-SD locked risk; early = administrative censoring at 5y on the full cohort, late = delayed entry at 5y",
+  "unit": "per SD of locked linear predictor, within-cohort SD",
+  "early": {
+    "n": 3273,
+    "deaths": 311,
+    "HR": 1.447,
+    "CI": [
+      1.309,
+      1.6
+    ],
+    "p": 5.088387767089699e-13
+  },
+  "late": {
+    "n": 1171,
+    "deaths": 25,
+    "HR": 1.415,
+    "CI": [
+      0.988,
+      2.028
+    ],
+    "p": 0.05817647625985971
+  }
+}

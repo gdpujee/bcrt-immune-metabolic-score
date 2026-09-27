@@ -1,0 +1,39 @@
+{
+  "GSE42568": {
+    "n_total": 121,
+    "n_train_tumors": 104,
+    "n_normals": 17,
+    "n_excluded_other": 0,
+    "n_OS_events": 35,
+    "n_OS_censored": 69,
+    "median_OS_years": 5.997262149212868,
+    "median_followup_censored_years": 6.740588637919234,
+    "age_median": 56.49
+  },
+  "GSE20685": {
+    "n_total": 327,
+    "n_valid_OS": 327,
+    "n_OS_events": 83,
+    "n_OS_censored": 244,
+    "median_OS_years": 8.1,
+    "median_followup_censored": 9.2,
+    "n_metastasis_events": 83
+  },
+  "GSE45827": {
+    "n_total": 155,
+    "n_excluded_cell_lines": 14,
+    "n_bio": 141,
+    "n_tumor": 130,
+    "n_normal": 11,
+    "batches": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      8,
+      9,
+      10
+    ]
+  }
+}

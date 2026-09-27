@@ -1,0 +1,84 @@
+{
+  "annot_date": "Aug 09 2016",
+  "n_mapped_probes": 45118,
+  "cohorts": {
+    "GSE42568": {
+      "n": 121,
+      "n_probes": 54675,
+      "n_genes": 21755,
+      "sha256": "43b93f72f1d81838dcd2a5b6ccc3bc1875e46230dad0d7346236773a99e32b76",
+      "columns": [
+        "GSM",
+        "GSE",
+        "title",
+        "source",
+        "platform",
+        "age",
+        "er_status",
+        "grade",
+        "lymph_node_status",
+        "overall_survival_event",
+        "overall_survival_time_days",
+        "relapse_free_survival_event",
+        "relapse_free_survival_time_days",
+        "size",
+        "tissue"
+      ]
+    },
+    "GSE45827": {
+      "n": 155,
+      "n_probes": 29873,
+      "n_genes": 14522,
+      "sha256": "741184cd3b3354ed3ea45fc6a428ed36401cadc20505e5cc5fb381d8aed0ad35",
+      "columns": [
+        "GSM",
+        "GSE",
+        "title",
+        "source",
+        "platform",
+        "batch",
+        "cell_line",
+        "cell_origin",
+        "diagnosis",
+        "hybridation",
+        "tumor_subtype"
+      ]
+    },
+    "GSE20685": {
+      "n": 327,
+      "n_probes": 54627,
+      "n_genes": 21755,
+      "sha256": "e818a4d5834e20bbcf01de515caf856c394abb36a02b9cccc95be05c22d0a279",
+      "columns": [
+        "GSM",
+        "GSE",
+        "title",
+        "source",
+        "platform",
+        "adjuvant_chemotherapy",
+        "age_at_diagnosis",
+        "event_death",
+        "event_metastasis",
+        "follow_up_duration_years",
+        "gender",
+        "m_stage",
+        "n_stage",
+        "neoadjuvant_chemotherapy",
+        "regimen_caf_vs_cmf",
+        "regional_relapse",
+        "subtype",
+        "t_stage",
+        "time_to_metastasis_years",
+        "time_to_relapse_years",
+        "tissue"
+      ]
+    }
+  },
+  "gene_intersection": 14522,
+  "gsm_overlap": 0,
+  "per_cohort_genes": {
+    "GSE42568": 21755,
+    "GSE45827": 14522,
+    "GSE20685": 21755
+  }
+}

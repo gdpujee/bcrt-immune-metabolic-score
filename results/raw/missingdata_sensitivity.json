@@ -1,0 +1,25 @@
+{
+  "method": "statsmodels PHReg, per-SD locked risk, prespecified adjusted covariate sets fitted on complete cases only (sensitivity; the primary models are median-imputed full-cohort fits)",
+  "GSE20685": {
+    "n": 325,
+    "deaths": 83,
+    "excluded_missing": 2,
+    "per_SD_HR": 1.5978,
+    "per_SD_CI": [
+      1.2811,
+      1.9928
+    ],
+    "per_SD_p": 3.2053315803132146e-05
+  },
+  "SCANB": {
+    "n": 2963,
+    "deaths": 286,
+    "excluded_missing": 310,
+    "per_SD_HR": 1.4136,
+    "per_SD_CI": [
+      1.2471,
+      1.6022
+    ],
+    "per_SD_p": 6.128837995377588e-08
+  }
+}

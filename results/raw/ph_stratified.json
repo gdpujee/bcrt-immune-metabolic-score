@@ -1,0 +1,14 @@
+{
+  "method": "risk x log(time) interaction (crude, n-driven) + time-stratified Cox",
+  "SCANB_le5y": {
+    "n": 3273,
+    "events": 311,
+    "HR": 1.447
+  },
+  "SCANB_gt5y": {
+    "n": 1171,
+    "events": 25,
+    "HR": 1.415
+  },
+  "interpretation": "average HR materially stable; reported HRs are average effects over follow-up"
+}

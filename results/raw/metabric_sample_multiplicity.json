@@ -1,0 +1,11 @@
+{
+  "study": "brca_metabric",
+  "attribute_probed": "ER_STATUS",
+  "sample_records": 2469,
+  "distinct_sampleIds": 2469,
+  "distinct_patientIds": 2469,
+  "patients_with_multiple_samples": 0,
+  "max_samples_per_patient": 1,
+  "examples": {},
+  "conclusion": "one tumour sample per patient; the patientId-keyed SAMPLE join in scripts/33_metabric_adjusted.py is unambiguous"
+}

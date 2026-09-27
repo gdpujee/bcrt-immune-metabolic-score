@@ -1,0 +1,267 @@
+{
+  "prespecified_covariates": [
+    "age",
+    "nodal_burden",
+    "grade",
+    "er",
+    "her2",
+    "tumor_size"
+  ],
+  "missingness": {
+    "age": {
+      "missing": 0,
+      "n_total": 1980,
+      "pct": 0.0
+    },
+    "nodal_burden": {
+      "missing": 76,
+      "n_total": 1980,
+      "pct": 3.84
+    },
+    "grade": {
+      "missing": 88,
+      "n_total": 1980,
+      "pct": 4.44
+    },
+    "er": {
+      "missing": 0,
+      "n_total": 1980,
+      "pct": 0.0
+    },
+    "her2": {
+      "missing": 0,
+      "n_total": 1980,
+      "pct": 0.0
+    },
+    "tumor_size": {
+      "missing": 26,
+      "n_total": 1980,
+      "pct": 1.31
+    }
+  },
+  "coding": {
+    "er": "Positive=1, Negative=0",
+    "her2": "Positive=1, Negative=0",
+    "grade": "ordinal 1/2/3 numeric",
+    "tumor_size": "T category from recorded size in mm: <=20 -> 1, >20-50 -> 2, >50 -> 3",
+    "nodal_burden": "count of positive nodes",
+    "risk": "locked linear predictor / cohort SD"
+  },
+  "coding_correction": {
+    "issue": "an earlier revision derived tumor_size by taking the leading digit of TUMOR_SIZE, which is recorded in millimetres (median 22.4, max 182), producing a meaningless covariate",
+    "detected": "logged TUMOR_SIZE value counts showed 20.0/25.0/30.0 mm, not T-category digits",
+    "superseded_complete_case": {
+      "n": 1679,
+      "deaths": 944,
+      "risk_sd_HR": 1.096,
+      "risk_sd_CI": [
+        1.011,
+        1.188
+      ],
+      "risk_sd_p": 0.0257,
+      "tumor_size_HR": 1.213,
+      "tumor_size_CI": [
+        1.13,
+        1.302
+      ],
+      "tumor_size_p": 9.34e-08
+    },
+    "note": "disclosed rather than silently overwritten; the covariate set itself is unchanged and was fixed in DECISIONS.md D-038 before execution"
+  },
+  "complete_case": {
+    "n": 1815,
+    "deaths": 1041,
+    "terms": {
+      "risk_sd": {
+        "HR": 1.0825,
+        "CI": [
+          1.0035,
+          1.1677
+        ],
+        "p": 0.04030428065907941
+      },
+      "age": {
+        "HR": 1.0386,
+        "CI": [
+          1.0329,
+          1.0444
+        ],
+        "p": 3.974338726668627e-41
+      },
+      "nodal_burden": {
+        "HR": 1.0573,
+        "CI": [
+          1.0461,
+          1.0685
+        ],
+        "p": 7.84229493363189e-25
+      },
+      "grade": {
+        "HR": 1.1082,
+        "CI": [
+          0.9951,
+          1.2341
+        ],
+        "p": 0.06130067680537301
+      },
+      "er": {
+        "HR": 0.8153,
+        "CI": [
+          0.6807,
+          0.9764
+        ],
+        "p": 0.026443491426590023
+      },
+      "her2": {
+        "HR": 1.3661,
+        "CI": [
+          1.1319,
+          1.6486
+        ],
+        "p": 0.001145662979866273
+      },
+      "tumor_size": {
+        "HR": 1.3929,
+        "CI": [
+          1.2503,
+          1.5518
+        ],
+        "p": 1.814703390814426e-09
+      }
+    }
+  },
+  "reduced_core": {
+    "n": 1892,
+    "deaths": 1086,
+    "terms": {
+      "risk_sd": {
+        "HR": 1.1055,
+        "CI": [
+          1.0278,
+          1.189
+        ],
+        "p": 0.006973102927138898
+      },
+      "age": {
+        "HR": 1.0394,
+        "CI": [
+          1.0338,
+          1.045
+        ],
+        "p": 8.539356454252792e-45
+      },
+      "grade": {
+        "HR": 1.2297,
+        "CI": [
+          1.108,
+          1.3647
+        ],
+        "p": 0.00010001451246614583
+      },
+      "er": {
+        "HR": 0.8574,
+        "CI": [
+          0.7219,
+          1.0184
+        ],
+        "p": 0.07974660807215549
+      },
+      "her2": {
+        "HR": 1.3888,
+        "CI": [
+          1.157,
+          1.6671
+        ],
+        "p": 0.00042330441544541223
+      }
+    }
+  },
+  "complete_case_incremental": {
+    "C_clinical_only": 0.6633,
+    "C_clinical_plus_risk": 0.6665,
+    "delta_C": 0.0032,
+    "delta_C_CI95_boot500": [
+      -0.0001,
+      0.0092
+    ],
+    "LRT_chi2": 4.175,
+    "LRT_df": 1,
+    "LRT_p": 0.041016988103080076,
+    "boot_draws_used": 500
+  },
+  "reduced_core_incremental": {
+    "C_clinical_only": 0.6226,
+    "C_clinical_plus_risk": 0.6274,
+    "delta_C": 0.0048,
+    "delta_C_CI95_boot500": [
+      0.0006,
+      0.0121
+    ],
+    "LRT_chi2": 7.219,
+    "LRT_df": 1,
+    "LRT_p": 0.007211811154557046,
+    "boot_draws_used": 500
+  },
+  "imputed_sensitivity": {
+    "n": 1980,
+    "deaths": 1143,
+    "terms": {
+      "risk_sd": {
+        "HR": 1.0825,
+        "CI": [
+          1.0087,
+          1.1618
+        ],
+        "p": 0.027788086311398286
+      },
+      "age": {
+        "HR": 1.0388,
+        "CI": [
+          1.0333,
+          1.0444
+        ],
+        "p": 2.071213884506452e-44
+      },
+      "nodal_burden": {
+        "HR": 1.0596,
+        "CI": [
+          1.0488,
+          1.0705
+        ],
+        "p": 1.5630287887800116e-28
+      },
+      "grade": {
+        "HR": 1.121,
+        "CI": [
+          1.012,
+          1.2416
+        ],
+        "p": 0.028578586446011092
+      },
+      "er": {
+        "HR": 0.8306,
+        "CI": [
+          0.6999,
+          0.9857
+        ],
+        "p": 0.03359901670285935
+      },
+      "her2": {
+        "HR": 1.3568,
+        "CI": [
+          1.1331,
+          1.6248
+        ],
+        "p": 0.0009044034956402659
+      },
+      "tumor_size": {
+        "HR": 1.357,
+        "CI": [
+          1.224,
+          1.5044
+        ],
+        "p": 6.6680109062664075e-09
+      }
+    }
+  }
+}

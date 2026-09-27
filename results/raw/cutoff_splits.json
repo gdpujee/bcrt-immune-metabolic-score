@@ -1,0 +1,28 @@
+{
+  "locked_cutoff": -0.2880220748019792,
+  "rule": "high = risk > cutoff, low = risk <= cutoff",
+  "GSE20685": {
+    "n": 327,
+    "high": 48,
+    "low": 279,
+    "high_pct": 14.68,
+    "sd": 1.0051,
+    "text": "48/279"
+  },
+  "SCANB": {
+    "n": 3273,
+    "high": 156,
+    "low": 3117,
+    "high_pct": 4.77,
+    "sd": 1.2149,
+    "text": "156/3117"
+  },
+  "METABRIC": {
+    "n": 1980,
+    "high": 1909,
+    "low": 71,
+    "high_pct": 96.41,
+    "sd": 1.0154,
+    "text": "1909/71"
+  }
+}

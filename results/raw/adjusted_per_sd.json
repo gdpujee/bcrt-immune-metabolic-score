@@ -1,0 +1,68 @@
+{
+  "GSE20685": {
+    "n": 327,
+    "deaths": 83,
+    "sd": 1.0051,
+    "per_unit_HR": 1.5923,
+    "per_unit_CI": [
+      1.2782,
+      1.9834
+    ],
+    "per_unit_p": 3.3228074498058256e-05,
+    "per_SD_HR": 1.596,
+    "per_SD_CI": [
+      1.2798,
+      1.9903
+    ],
+    "per_SD_p": 3.3228074498058256e-05,
+    "covariates": "age_at_diagnosis + t_stage + n_stage (median-imputed)",
+    "calib_slope": 0.4647,
+    "calib_slope_SE": 0.1093
+  },
+  "SCANB": {
+    "n": 3273,
+    "deaths": 336,
+    "sd": 1.2149,
+    "per_unit_HR": 1.3677,
+    "per_unit_CI": [
+      1.2616,
+      1.4828
+    ],
+    "per_unit_p": 3.0391178192844545e-14,
+    "per_SD_HR": 1.4629,
+    "per_SD_CI": [
+      1.3262,
+      1.6138
+    ],
+    "per_SD_p": 3.0391178192844545e-14,
+    "covariates": "age_at_diagnosis + er_status + her2_status (median-imputed)",
+    "imputation": "cohort-median on all four columns, as in scripts/11_rnaseq_validate.py",
+    "calib_slope": 0.3029,
+    "calib_slope_SE": 0.0406
+  },
+  "METABRIC": {
+    "n": 1815,
+    "deaths": 1041,
+    "sd": null,
+    "per_unit_HR": null,
+    "per_unit_CI": null,
+    "per_unit_p": null,
+    "per_SD_HR": 1.0825,
+    "per_SD_CI": [
+      1.0035,
+      1.1677
+    ],
+    "per_SD_p": 0.04030428065907941,
+    "primary_model": "complete-case, prespecified six-covariate set",
+    "imputed_sensitivity_per_SD_HR": 1.0825,
+    "imputed_sensitivity_per_SD_CI": [
+      1.0087,
+      1.1618
+    ],
+    "covariates": "age + positive nodes + grade + ER + HER2 + tumor size (T category; prespecified, complete case)",
+    "calib_slope": 0.1238,
+    "calib_slope_SE": 0.0292
+  },
+  "note": "All adjusted hazard ratios are expressed per one SD of the locked linear predictor within each cohort (the primary analysis unit), so the adjusted and unadjusted columns of the transportability table are directly comparable. Per-1-score-unit values are retained in the supplementary table. The score itself is never refit.",
+  "calib_slope_source": "Cox coefficient of the locked score refit in each validation cohort (1.0 = perfect calibration); GSE20685 and SCAN-B values from results/raw/corrective_summary.json and rnaseq_summary.json, METABRIC computed here."
+}

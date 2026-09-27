@@ -1,0 +1,40 @@
+{
+  "title": "Cross-platform external validation of an immune-metabolic transcriptional score for breast cancer overall survival: analysis code and derived data",
+  "description": "<p>Analysis code and derived data tables for a locked external validation of a 14-gene immune-metabolic transcriptional score in breast cancer overall survival.</p><p>A score built in GSE42568 (104 tumours, 35 deaths) with frozen genes, Cox coefficients, training scaling and cutoff was applied once, without retraining or recentering, to three independent validation cohorts spanning two assay classes: GSE20685 (Affymetrix microarray, 327 tumours), SCAN-B GSE96058 (RNA-seq, 3,273 patients) and METABRIC (Illumina HT-12 microarray, 1,980 analyzable patients). The primary estimand is the continuous per-SD association from Cox regression.</p><p>Headline finding: the continuous association replicated in all three cohorts (per-SD HR 1.59 [95% CI 1.29-1.98], 1.44 [1.31-1.59] and 1.13 [1.07-1.20]) while the absolute cutoff did not transport, and the PAM50 subtype heterogeneity seen in SCAN-B did not replicate in METABRIC (global interaction p=0.42). Effects were time-dependent in the microarray cohorts.</p><p>This archive contains the pipeline scripts, the derived result files (JSON/TSV), the figure sources and the derived data tables. It does not contain the primary expression or clinical data, which are obtained from the public accessions named in the repository README.</p>",
+  "creators": [
+    {
+      "name": "He, Danhua",
+      "affiliation": "Guangdong Provincial Hospital of Chinese Medicine, Guangzhou, Guangdong, China",
+      "orcid": "0009-0007-0238-2494",
+      "type": "Researcher"
+    },
+    {
+      "name": "Li, Qiang",
+      "affiliation": "Unaffiliated / Independent Researcher, Foshan, Guangdong, China",
+      "orcid": "0009-0003-6404-335X",
+      "type": "Researcher"
+    }
+  ],
+  "keywords": [
+    "breast cancer",
+    "prognostic biomarker",
+    "overall survival",
+    "external validation",
+    "transportability",
+    "PAM50",
+    "reproducible research"
+  ],
+  "license": "mit",
+  "upload_type": "software",
+  "access_right": "open",
+  "language": "eng",
+  "version": "v4.0.0",
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/gdpujee/bcrt-immune-metabolic-score",
+      "relation": "isSupplementTo",
+      "resource_type": "software",
+      "scheme": "url"
+    }
+  ]
+}

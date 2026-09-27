@@ -1,0 +1,24 @@
+{
+  "locked14": [
+    "FBP1",
+    "GRK6",
+    "IKBKB",
+    "RAP1B",
+    "TNFRSF19",
+    "ALDH2",
+    "CXCL14",
+    "DLG1",
+    "IDNK",
+    "TNFRSF12A",
+    "PRPS2",
+    "TKT",
+    "UQCRHL",
+    "PLCG1"
+  ],
+  "pam50_n": 50,
+  "overlap": [],
+  "overlap_frac": "0/14",
+  "jaccard": 0.0,
+  "corepam_inference": "CorePAM subsets PAM50-50; 14\u2229PAM50=\u2205 implies 14\u2229CorePAM=\u2205",
+  "pam50_source": "metadata/pam50_genefu_Parker2009.rda (BHKLAB/genefu data/pam50.rda, Parker et al. JCO 2009 centroids; fetched 2026-09-26 from https://raw.githubusercontent.com/BHKLAB/genefu/master/data/pam50.rda)"
+}

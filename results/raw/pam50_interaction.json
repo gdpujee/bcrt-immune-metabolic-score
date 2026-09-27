@@ -1,0 +1,9 @@
+{
+  "n": 3273,
+  "LR_chi2": 10.639165836939355,
+  "df": 4,
+  "p_nominal": 0.03093306178491173,
+  "reference_subtype": "pam_Basal",
+  "seed": 42,
+  "note": "exploratory heterogeneity check; complements per-subtype HRs"
+}

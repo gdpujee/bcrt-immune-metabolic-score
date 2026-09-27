@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+message: "If you use this analysis code or the derived data tables, please cite the archived release (concept DOI below) and the associated article."
+type: software
+title: "Cross-platform external validation of an immune-metabolic transcriptional score for breast cancer overall survival: analysis code and derived data"
+abstract: >-
+  Analysis code and derived data tables for a locked external validation of a
+  14-gene immune-metabolic transcriptional score in breast cancer overall
+  survival. A score built in GSE42568 with frozen genes, Cox coefficients,
+  training scaling and cutoff was applied once, without retraining, to three
+  independent validation cohorts spanning two assay classes: GSE20685
+  (Affymetrix microarray), SCAN-B GSE96058 (RNA-seq) and METABRIC (Illumina
+  HT-12 microarray). The continuous per-SD association replicated in all three
+  cohorts while the absolute cutoff did not transport, and the PAM50 subtype
+  heterogeneity observed in SCAN-B did not replicate in METABRIC.
+authors:
+  - family-names: He
+    given-names: Danhua
+    affiliation: "Guangdong Provincial Hospital of Chinese Medicine, Guangzhou, Guangdong, China"
+    orcid: "https://orcid.org/0009-0007-0238-2494"
+  - family-names: Li
+    given-names: Qiang
+    affiliation: "Unaffiliated / Independent Researcher, Foshan, Guangdong, China"
+    orcid: "https://orcid.org/0009-0003-6404-335X"
+version: "v4.0.0"
+date-released: "2026-09-26"
+doi: "10.5281/zenodo.22961119"
+license: MIT
+license-url: "https://opensource.org/licenses/MIT"
+repository-code: "https://github.com/gdpujee/bcrt-immune-metabolic-score"
+keywords:
+  - breast cancer
+  - prognostic biomarker
+  - overall survival
+  - external validation
+  - transportability
+  - PAM50
+  - reproducible research

@@ -1,0 +1,5 @@
+Analysis	Delta_C	95CI	Base_to_Full
+GSE20685 ΔC (+risk over age+T+N)	0.028	[0.003, 0.072]	0.708→0.737
+SCANB ΔC (+risk over age+ER+HER2)	0.024	[0.011, 0.039]	0.733→0.757
+SCANB ΔC (+risk over PAM50 subtypes)	0.002	[-0.010,0.013]	0.624→0.626; LRT p=0.006
+GSE20685 ΔC (+risk over Kao I-VI subtypes)	0.037	[-0.002,0.072]	0.660→0.698; LRT p=0.023; boundary (CI incl. 0)

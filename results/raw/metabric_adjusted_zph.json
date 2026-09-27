@@ -1,0 +1,42 @@
+{
+  "method": "survival::cox.zph (rank transform, Breslow ties) on the prespecified complete-case adjusted model",
+  "survival_version": "3.8.6",
+  "unit": "risk_sd = per SD of the locked linear predictor, within-cohort SD",
+  "n": 1815,
+  "events": 1041,
+  "vars": {
+    "risk_sd": {
+      "chisq": 77.9007370889,
+      "p": 1.0835094247e-18
+    },
+    "age": {
+      "chisq": 79.4556892941,
+      "p": 4.9316261559e-19
+    },
+    "nodal_burden": {
+      "chisq": 5.9016998304,
+      "p": 0.015126279664
+    },
+    "grade": {
+      "chisq": 39.5041079495,
+      "p": 3.273700333e-10
+    },
+    "er": {
+      "chisq": 92.4115064445,
+      "p": 7.0403562729e-22
+    },
+    "her2": {
+      "chisq": 14.2240069989,
+      "p": 0.00016228685732
+    },
+    "tumor_size": {
+      "chisq": 3.3525506375,
+      "p": 0.067100965443
+    }
+  },
+  "global": {
+    "chisq": 158.8333920011,
+    "df": 7,
+    "p": 5.6452467752e-31
+  }
+}
