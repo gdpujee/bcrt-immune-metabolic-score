@@ -21,9 +21,8 @@ authors:
     given-names: Qiang
     affiliation: "Unaffiliated / Independent Researcher, Foshan, Guangdong, China"
     orcid: "https://orcid.org/0009-0003-6404-335X"
-version: "v4.0.0"
-date-released: "2026-09-26"
-doi: "10.5281/zenodo.22961119"
+version: "v1.0.1"
+date-released: "2026-09-27"
 license: MIT
 license-url: "https://opensource.org/licenses/MIT"
 repository-code: "https://github.com/gdpujee/bcrt-immune-metabolic-score"
