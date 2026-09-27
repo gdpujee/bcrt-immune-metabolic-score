@@ -1,8 +1,7 @@
 # Immune–metabolic transcriptional score in breast cancer: analysis code and derived data
 
-Analysis code and derived data tables for the manuscript *Cross-platform external
-validation of an immune–metabolic transcriptional score for breast cancer overall
-survival*, submitted to *Breast Cancer Research and Treatment*.
+Analysis code and derived data tables accompanying the manuscript *Cross-platform transportability of a locked immune–metabolic transcriptional score for breast cancer overall survival*,
+submitted to *Breast Cancer Research and Treatment*.
 
 **Archived release (version DOI): [10.5281/zenodo.22995292](https://doi.org/10.5281/zenodo.22995292)**
 *(Concept DOI for all versions: [10.5281/zenodo.22994650](https://doi.org/10.5281/zenodo.22994650))*
@@ -24,8 +23,9 @@ spanning two assay classes:
 The primary estimand is the continuous per-SD association from Cox regression. The
 continuous association replicated in all three cohorts (per-SD HR 1.59 [95% CI
 1.29–1.98], 1.44 [1.31–1.59] and 1.13 [1.07–1.20]) while the absolute cutoff did not
-transport, and the PAM50 subtype heterogeneity seen in SCAN-B did not replicate in
-METABRIC (global interaction p=0.42). Effects were time-dependent in the two
+transport. The exploratory five-class PAM50 heterogeneity pattern seen in SCAN-B
+was not reproduced in the broader METABRIC CLAUDIN_SUBTYPE analysis (global
+interaction p=0.42). Effects were time-dependent in the two
 microarray cohorts, so those estimates are averages over follow-up.
 
 ## Repository layout

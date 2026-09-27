@@ -217,8 +217,8 @@ pairs = []
 pairs.append((
     "covariate-adjusted Cox (GSE20685: age+T+N; SCAN-B: age+ER+HER2)",
     "covariate-adjusted Cox (GSE20685: age+T+N; SCAN-B: age+ER+HER2; METABRIC: "
-    "age+positive lymph nodes+grade+ER+HER2+tumor size, a set prespecified before "
-    "execution and not selected on outcome)"))
+    "age+positive lymph nodes+grade+ER+HER2+tumor-size category derived from recorded "
+    "millimetres, a set prespecified before execution and not selected on outcome)"))
 
 pairs.append((
     "for SCAN-B, age had zero missing values, ER status was missing in 200 patients, "
@@ -241,17 +241,28 @@ pairs.append((
     "analysis throughout: the primary estimand is the continuous per-SD association."))
 
 # --- Results: METABRIC adjusted Cox ---
-pairs.append((
-    "so PAM50 heterogeneity remains a SCAN-B-only exploratory finding.",
-    "so PAM50 heterogeneity remains a SCAN-B-only exploratory finding. Clinical "
-    f"adjustment of METABRIC (age+positive nodes+grade+ER+HER2+tumor size, prespecified; "
-    f"complete-case n={cc['n']}, {cc['deaths']} deaths) attenuated but did not remove the "
-    f"association: adjusted HR {hr(ccr)} per SD. Discrimination barely moved "
-    f"(clinical-only C {ci_inc['C_clinical_only']:.3f} to clinical+score C "
-    f"{ci_inc['C_clinical_plus_risk']:.3f}; {inc_txt(ci_inc)}; likelihood-ratio "
-    f"p={ci_inc['LRT_p']:.3g}), and the median/mode-imputation "
-    f"sensitivity gave a similar adjusted estimate (HR {mi['HR']:.2f} "
-    f"[{mi['CI'][0]:.2f},{mi['CI'][1]:.2f}])."))
+_sub_now = sub.read_text()
+_metabric_adjustment_markers = (
+    "Clinical adjustment of METABRIC (age+positive nodes+grade+ER+HER2+tumor-size category",
+    "clinical-only C 0.663 to clinical+score C 0.666",
+    "median/mode-imputation sensitivity gave a similar adjusted estimate",
+)
+if all(marker in _sub_now for marker in _metabric_adjustment_markers):
+    log("[results-metabric-adjusted] current detailed analysis already present")
+elif not any(marker in _sub_now for marker in _metabric_adjustment_markers):
+    pairs.append((
+        "so PAM50 heterogeneity remains a SCAN-B-only exploratory finding.",
+        "so PAM50 heterogeneity remains a SCAN-B-only exploratory finding. Clinical "
+        f"adjustment of METABRIC (age+positive nodes+grade+ER+HER2+tumor size, prespecified; "
+        f"complete-case n={cc['n']}, {cc['deaths']} deaths) attenuated but did not remove the "
+        f"association: adjusted HR {hr(ccr)} per SD. Discrimination barely moved "
+        f"(clinical-only C {ci_inc['C_clinical_only']:.3f} to clinical+score C "
+        f"{ci_inc['C_clinical_plus_risk']:.3f}; {inc_txt(ci_inc)}; likelihood-ratio "
+        f"p={ci_inc['LRT_p']:.3g}), and the median/mode-imputation "
+        f"sensitivity gave a similar adjusted estimate (HR {mi['HR']:.2f} "
+        f"[{mi['CI'][0]:.2f},{mi['CI'][1]:.2f}])."))
+else:
+    raise SystemExit("[results-metabric-adjusted] current analysis is partial; review it manually")
 
 # --- Results: formal time-varying results ---
 pairs.append((
@@ -461,7 +472,7 @@ def build_legends():
         return out
 
     figs, tbls = bullets("## Figure legends"), bullets("## Tables")
-    got = [re.match(r"- \*\*(Fig\.? ?S?\d+)\.\*\*", b).group(1).replace("Fig ", "Fig. ")
+    got = [re.match(r"- \*\*(Fig\.? ?S?\d+)\*\*", b).group(1).replace("Fig ", "Fig. ")
            for b in figs]
     if got != EXPECTED_ORDER:
         raise SystemExit(f"figure legends are out of order or incomplete: {got}")
@@ -472,13 +483,13 @@ def build_legends():
     L = ["# Figure legends and table titles", "",
          "This file repeats the legend text of `manuscript_submission.md` beside the "
          "file name of each figure, so artwork can be uploaded against its caption. "
-         "Figures S1-S4 and Table S1 belong to the Supplementary Information.", "",
+         "Figures S1-S4 and Table S1 are included in Online Resource 1.", "",
          "## Figures", ""]
     for b in figs:
-        m = re.match(r"- \*\*(Fig\.? ?S?\d+)\.\*\* (.*)", b)
+        m = re.match(r"- \*\*(Fig\.? ?S?\d+)\*\* (.*)", b)
         label = m.group(1).replace("Fig ", "Fig. ")
         stem = FIG_FILES[label]
-        L.append(f"- **{label}.** {m.group(2)}  ")
+        L.append(f"- **{label}** {m.group(2)}  ")
         L.append(f"  Files: `figures/{stem}.pdf` (vector), `figures/{stem}.png` (raster).")
     L += ["", "## Tables", ""]
     for b in tbls:
@@ -505,6 +516,12 @@ KW_NEW = ("breast cancer; prognostic biomarker; overall survival; external valid
 stage(sub, [("## Keywords\n" + KW_OLD, "## Keywords\n" + KW_NEW)], "submission-keywords")
 
 tp = SUB / "title_page.md"
+_ms_title = re.search(r"(?m)^## Title\s*\n([^\n]+)", sub.read_text())
+if not _ms_title:
+    raise SystemExit("submission manuscript has no ## Title section")
+TITLE_OLD = "Cross-platform external validation of an immune–metabolic transcriptional score for breast cancer overall survival"
+TITLE_NEW = _ms_title.group(1).strip()
+stage(tp, [("Title: " + TITLE_OLD, "Title: " + TITLE_NEW)], "title-page-title")
 stage(tp, [("Keywords: " + KW_OLD, "Keywords: " + KW_NEW)], "title-page-keywords")
 
 # ------------------------------------------------------------------ declarations
@@ -520,15 +537,20 @@ stage(dec, [("All pipeline scripts (01-31)", "All pipeline scripts (01-42)")],
 # the manuscript.  Anchors are per-sentence because `declarations.md` states
 # availability twice (data and code) with the same trailing phrase.
 REPO = "https://github.com/gdpujee/bcrt-immune-metabolic-score"
-ARCHIVE = "https://doi.org/10.5281/zenodo.22961119"
+# Version DOI pins the archived snapshot that matches this manuscript (Zenodo
+# record for tag v1.0.1); the concept DOI always resolves to the newest version.
+# The pre-resubmission concept/version pair (22961119/22961120) was deleted on
+# 2026-09-27 and must never come back — gate 40 asserts its absence.
+ARCHIVE = "https://doi.org/10.5281/zenodo.22995292"
+CONCEPT = "https://doi.org/10.5281/zenodo.22994650"
 AVAIL_TAIL = f"publicly available at {REPO}."
 
-stage(sub, [(f"derived data tables are {AVAIL_TAIL}",
+stage(sub, [(f"derived data tables are {AVAIL_TAIL[:-1]} and archived at {ARCHIVE}.",
              f"derived data tables are {AVAIL_TAIL[:-1]} and archived at {ARCHIVE}.")],
       "submission-doi")
-stage(dec, [(f"derived data tables are {AVAIL_TAIL}",
+stage(dec, [(f"derived data tables are {AVAIL_TAIL[:-1]} and archived at {ARCHIVE}.",
              f"derived data tables are {AVAIL_TAIL[:-1]} and archived at {ARCHIVE}."),
-            (f"reproduction workflows are {AVAIL_TAIL}",
+            (f"reproduction workflows are {AVAIL_TAIL[:-1]}, archived at {ARCHIVE}.",
              f"reproduction workflows are {AVAIL_TAIL[:-1]}, archived at {ARCHIVE}.")],
       "declarations-doi")
 
@@ -550,7 +572,7 @@ stage(SUP_SRC, [("All analysis code, intermediate result files, run logs and the
                  f"complete analysis chain are archived in the public repository: {REPO}.",
                  f"The public archive holds all analysis code, the intermediate "
                  f"result files and the complete analysis chain: {REPO}. "
-                 f"The release carries concept DOI {ARCHIVE}.")],
+                 f"The release is archived at {ARCHIVE} (concept DOI {CONCEPT}).")],
       "supplement-availability")
 
 SUPP_FIG_FILES = {
@@ -589,7 +611,7 @@ def manuscript_legends():
     """
     ms = (SUB / "manuscript_submission.md").read_text()
     out = {}
-    for m in re.finditer(r"(?m)^- \*\*(Fig\.? ?S?\d+)\.\*\* (.*)$", ms):
+    for m in re.finditer(r"(?m)^- \*\*(Fig\.? ?S?\d+)\*\* (.*)$", ms):
         out[m.group(1).replace("Fig ", "Fig. ")] = m.group(2).strip()
     return out
 
@@ -821,7 +843,7 @@ index.write_text(
     "- `manuscript_submission.md` - the single source of truth for every rendered file.\n"
     "- `manuscript_final.pdf` - publication-grade PDF.\n"
     "- `manuscript_review.pdf` - same content, review rendering with figures inline.\n"
-    "- `manuscript_bcrt.docx` - Word manuscript, tables on landscape pages.\n"
+    "- `manuscript_bcrt.doc` - Word manuscript, tables on landscape pages.\n"
     "- `manuscript_bcrt.tex` - LaTeX source.\n"
     "- `abstract_structured.md` - structured abstract (generated from the manuscript).\n"
     "- `references_numbered.md` - numbered reference list, order of first appearance.\n"
@@ -829,7 +851,7 @@ index.write_text(
     "- `declarations.md` - Statements and Declarations.\n"
     "- `REMARK_checklist.md` - completed REMARK checklist (all 20 items).\n"
     "- `supplement.md` - Supplementary Material source.\n"
-    "- `Supplementary_Information.pdf` - Supplementary Information, as uploaded.\n\n"
+    "- `ESM_1.pdf` - Supplementary Information (Online Resource 1), as uploaded.\n\n"
     "## Regeneration order\n\n"
     "`02`-`42` produce the results and tables; then `34_build_abstract.py`, "
     "`36_citations.py`, `44_build_remark.py`, `39_finalize_docs.py`, "

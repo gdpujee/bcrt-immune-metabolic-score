@@ -1,16 +1,23 @@
-"""Build BCRT Word source from the submission manuscript (WORDSRC-001).
+"""Build the BCRT Word manuscript (WORDSRC-001).
 
 python-docx: headings, paragraphs with **bold** runs, bullets, 4 tables from
-tables/*.tsv, 14 embedded PNGs at their legends. Review/submission rendering
-only; no scientific content is created or altered here. BCRT accepts Word
-source at submission; convert/template-polish in Word before uploading.
-Outputs: submission_bcrt/manuscript_bcrt.docx, logs/word_src.log
+ tables/*.tsv, 14 embedded PNGs at their legends. Review/submission rendering
+only; no scientific content is created or altered here. A temporary DOCX is
+converted to the journal's requested legacy .doc format with LibreOffice; the
+DOC is round-tripped to DOCX to verify that tables and figures survived.
+Outputs: submission_bcrt/manuscript_bcrt.doc, logs/word_src.log
 """
 import re
+import shutil
+import subprocess
+import tempfile
 import zipfile
 from pathlib import Path
 from docx import Document
 from docx.shared import Pt, Inches
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
 from docx.enum.section import WD_ORIENT, WD_SECTION
 import pandas as pd
 
@@ -18,7 +25,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MS = ROOT / "submission_bcrt" / "manuscript_submission.md"
 FIG = ROOT / "figures"
 TAB = ROOT / "tables"
-OUT = ROOT / "submission_bcrt" / "manuscript_bcrt.docx"
+OUT = ROOT / "submission_bcrt" / "manuscript_bcrt.doc"
 LOGS = ROOT / "logs"
 logf = open(LOGS / "word_src.log", "w")
 
@@ -66,7 +73,9 @@ TBL_MAP = {
 
 doc = Document()
 st = doc.styles["Normal"]
-st.font.size = Pt(11)
+st.font.name = "Times New Roman"
+st._element.rPr.rFonts.set(qn("w:eastAsia"), "Times New Roman")
+st.font.size = Pt(10)
 nfig = ntbl = 0
 
 
@@ -107,11 +116,12 @@ for ln in MS.read_text().split("\n"):
             set_orientation(doc.add_section(WD_SECTION.NEW_PAGE), False)
         doc.add_heading(sec_name, level=1)
     elif ln.startswith("- **Fig"):
-        m = re.match(r"- \*\*(Fig\.? ?S?\d+)\.\*\* (.*)", ln)
+        m = re.match(r"- \*\*(Fig\.? ?S?\d+)\*\* (.*)", ln)
         if m:
             fig_id = m.group(1).replace("Fig ", "Fig. ")
             p = doc.add_paragraph()
-            r = p.add_run(fig_id + ". ")
+            p.paragraph_format.keep_with_next = True
+            r = p.add_run(fig_id + " ")
             r.bold = True
             rich_para(p, m.group(2))
             
@@ -125,12 +135,14 @@ for ln in MS.read_text().split("\n"):
                 raise SystemExit(f"no image for {fig_id} (FIG_MAP -> {fig_file!r}); a "
                                  "legend must not render as a caption with no figure")
             doc.add_picture(str(FIG / fig_file), width=Inches(6.0))
+            doc.paragraphs[-1].paragraph_format.keep_together = True
             nfig += 1
     elif ln.startswith("- **Table"):
         m = re.match(r"- \*\*(Table \d+)\.\*\* (.*)", ln)
         if m:
             tbl_id = m.group(1)
             p = doc.add_paragraph()
+            p.paragraph_format.keep_with_next = True
             r = p.add_run(tbl_id + ". ")
             r.bold = True
             rich_para(p, m.group(2))
@@ -203,8 +215,69 @@ def normalize_zip(path, stamp=(1980, 1, 1, 0, 0, 0)):
 n_legends = sum(1 for l in MS.read_text().split("\n") if l.startswith("- **Fig"))
 if nfig != n_legends:
     raise SystemExit(f"{nfig} image(s) embedded for {n_legends} figure legend(s)")
-doc.save(str(OUT))
-normalize_zip(OUT)
+
+# BCRT requests automatic page numbering. Use a PAGE field in each section so
+# numbering remains live when editors reflow the Word document.
+for section in doc.sections:
+    section.footer.is_linked_to_previous = False
+    footer = section.footer.paragraphs[0]
+    footer.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    page = OxmlElement("w:fldSimple")
+    page.set(qn("w:instr"), "PAGE")
+    run = OxmlElement("w:r")
+    txt = OxmlElement("w:t")
+    txt.text = "1"
+    run.append(txt)
+    page.append(run)
+    footer._p.append(page)
+
+title_match = re.search(r"(?m)^## Title\s*\n([^\n]+)", MS.read_text())
+if not title_match:
+    raise SystemExit("submission manuscript has no ## Title section")
+expected_title = title_match.group(1).strip()
+
+with tempfile.TemporaryDirectory(prefix="bio-dsh-word-") as tmp:
+    tmp = Path(tmp)
+    src = tmp / "manuscript_bcrt.docx"
+    outdir = tmp / "doc"
+    checkdir = tmp / "roundtrip"
+    outdir.mkdir()
+    checkdir.mkdir()
+    doc.save(str(src))
+    normalize_zip(src)
+
+    soffice = shutil.which("soffice")
+    if not soffice:
+        raise SystemExit("LibreOffice 'soffice' is required to create the BCRT .doc file")
+    conv = subprocess.run(
+        [soffice, "--headless", "--convert-to", "doc", "--outdir", str(outdir), str(src)],
+        capture_output=True, text=True)
+    built_doc = outdir / "manuscript_bcrt.doc"
+    if conv.returncode or not built_doc.is_file():
+        raise SystemExit("DOC conversion failed: " + (conv.stderr or conv.stdout)[-500:])
+
+    # A round-trip catches converters that produce a syntactically valid DOC but
+    # silently drop embedded figures or tables.
+    check = subprocess.run(
+        [soffice, "--headless", "--convert-to", "docx", "--outdir", str(checkdir),
+         str(built_doc)], capture_output=True, text=True)
+    roundtrip = checkdir / "manuscript_bcrt.docx"
+    if check.returncode or not roundtrip.is_file():
+        raise SystemExit("DOC round-trip validation failed: " +
+                         (check.stderr or check.stdout)[-500:])
+    verify = Document(str(roundtrip))
+    body = "\n".join(p.text for p in verify.paragraphs)
+    if expected_title not in body:
+        raise SystemExit("DOC round-trip lost the article title")
+    if len(verify.inline_shapes) != nfig or len(verify.tables) != ntbl:
+        raise SystemExit("DOC round-trip changed figures/tables: "
+                         f"{len(verify.inline_shapes)}/{len(verify.tables)} "
+                         f"vs expected {nfig}/{ntbl}")
+    if not verify.sections or any("PAGE" not in section.footer._element.xml
+                                  for section in verify.sections):
+        raise SystemExit("DOC round-trip lost an automatic page-number field")
+    shutil.copy2(built_doc, OUT)
+
 log(f"WORDSRC-001: {OUT.name} with {nfig} figures + {ntbl} tables; "
-    f"{OUT.stat().st_size / 1024:.0f} KB")
+    f"{OUT.stat().st_size / 1024:.0f} KB; DOC round-trip verified")
 logf.close()

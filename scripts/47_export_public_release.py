@@ -6,11 +6,12 @@ explicit ALLOW-LIST of what a reader of the paper needs.
 
 Why an allow-list rather than a .gitignore
 ------------------------------------------
-This working repository and the public repository share the same `origin` URL,
-so anything tracked here is one `git push` away from disclosure.  A deny-list
-("publish everything except ...") fails open: the day someone adds a new
-directory, it is published by default.  The allow-list fails closed — a new
-directory is published only after it is named below.
+This private working repository contains manuscripts, submission files and
+internal review material.  The public repository is synchronized only from the
+explicit export produced here.  A deny-list ("publish everything except ...")
+fails open: the day someone adds a new directory, it is published by default.
+The allow-list fails closed — a new directory is published only after it is
+named below.
 
 What is deliberately NOT exported
 ---------------------------------
@@ -56,7 +57,7 @@ Checks that abort the export
  3. no exported file carries a third-party address, an address that is not one
     of the two authors', an absolute local home path, or an `E-mail: <addr>`
     line; and no exported file exceeds the size ceiling
- 4. the release metadata is internally consistent: one version string shared by
+ 4. the release metadata is internally consistent: one title and version shared by
     `.zenodo.json` and `CITATION.cff`, one concept DOI and no superseded version
     DOI, the two author ORCIDs identical in both metadata files, and MIT
     declared in both the licence file and the Zenodo metadata
@@ -334,6 +335,9 @@ def main():
     # ---------------------------------------------------------- 4. metadata
     zen, cff = read_meta()
     v_zen, v_cff = zen.get("version"), cff.get("version")
+    check(".zenodo.json and CITATION.cff declare the same release title",
+          bool(zen.get("title")) and zen.get("title") == cff.get("title"),
+          f"zenodo={zen.get('title')!r} cff={cff.get('title')!r}")
     check(".zenodo.json and CITATION.cff declare the same version",
           bool(v_zen) and v_zen == v_cff, f"zenodo={v_zen!r} cff={v_cff!r}")
     check(".zenodo.json declares an MIT licence",
@@ -375,20 +379,25 @@ def main():
           str(zen_orcids))
 
     # ---------------------------------------------------------- 5. DOI citation
-    for what, path in (("CITATION.cff", ROOT / "CITATION.cff"),
-                       ("README.md", ROOT / "README.md"),
-                       ("LICENSE", ROOT / "LICENSE")):
+    # Dual-DOI discipline (rewritten after the v3.4.2 records were deleted and
+    # the release was re-minted through the Zenodo GitHub hook on tag v1.0.1):
+    # CITATION.cff pins the VERSION DOI (a citation must name the exact snapshot
+    # that matches the manuscript); README anchors the CONCEPT DOI (always the
+    # newest version). Any third number is a dead or superseded record.
+    VERSION_DOI = "10.5281/zenodo.22995292"
+    ALLOWED = {CONCEPT_DOI, VERSION_DOI}
+    for what, path, want in (("CITATION.cff", ROOT / "CITATION.cff", VERSION_DOI),
+                             ("README.md", ROOT / "README.md", CONCEPT_DOI),
+                             ("LICENSE", ROOT / "LICENSE", None)):
         if not path.exists():
             check(f"{what} exists for the DOI check", False)
             continue
         text = path.read_text()
         dois = re.findall(r"10\.5281/zenodo\.\d+", text)
-        if what != "LICENSE":
-            check(f"{what} cites the concept DOI", CONCEPT_DOI in text, CONCEPT_DOI)
-        # A version DOI is minted per release, so citing one pins a superseded
-        # archive — the failure that would send a reader to the stale v3.4.2 tree.
-        wrong = sorted({d for d in dois if d != CONCEPT_DOI})
-        check(f"{what} cites no superseded version DOI", not wrong, str(wrong))
+        if want:
+            check(f"{what} cites its required DOI ({want.split('.')[-1]})", want in text, want)
+        wrong = sorted({d for d in dois if d not in ALLOWED})
+        check(f"{what} cites no dead or superseded DOI", not wrong, str(wrong))
 
     # ---------------------------------------------------------- 6. manifest
     manifest = []

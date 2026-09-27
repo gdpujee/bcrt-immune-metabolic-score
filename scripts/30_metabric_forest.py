@@ -2,7 +2,7 @@
 
 Panel A: primary continuous per-SD HRs across the three locked validations
 (GSE20685, SCAN-B, METABRIC) read from result JSONs. Panel B: METABRIC
-PAM50-stratum HRs. No numbers hardcoded.
+CLAUDIN_SUBTYPE-stratum HRs (five canonical PAM50-like groups plus claudin-low). No numbers hardcoded.
 Outputs: figures/Fig12_crosscohort_forest.png(.pdf), logs/metabric_forest.log
 """
 import json
@@ -57,7 +57,7 @@ for st, s in sorted(m.groupby("CLAUDIN_SUBTYPE")):
 fig, ax = plt.subplots(1, 2, figsize=(11, 4.2), gridspec_kw={"width_ratios": [1, 1.2]})
 for a, rows, ttl in zip(ax, [A, B],
                          ["A. Primary per-SD HR (locked validations)",
-                          "B. METABRIC PAM50-stratum HR (exploratory)"]):
+                          "B. METABRIC CLAUDIN_SUBTYPE strata (exploratory)"]):
     ys = np.arange(len(rows))[::-1]
     for y, (nm, hr, lo, hi) in zip(ys, rows):
         a.plot(hr, y, "s", color="black")

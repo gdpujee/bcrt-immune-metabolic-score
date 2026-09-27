@@ -6,7 +6,7 @@ __pycache__/
 .venv/
 *.pyc
 .DS_Store
-logs/*
+logs/*.tmp
 !logs/.gitkeep
 manuscript/latex/*.aux
 manuscript/latex/*.log

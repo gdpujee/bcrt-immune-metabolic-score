@@ -19,11 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-Scope note. This licence covers the analysis code and the derived data tables
-authored in this repository. The primary expression and clinical data are not
-redistributed here; they remain subject to the terms of their original
-providers (NCBI GEO and cBioPortal), and the third-party gene sets and
-reference lists used as inputs remain under their own licences.

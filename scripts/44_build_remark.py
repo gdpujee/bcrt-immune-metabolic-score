@@ -85,7 +85,7 @@ ROWS = [
      "reproducibility gap, not a new signature."),
     ("Study objectives/hypotheses", "Introduction",
      "(i) does the locked score's continuous association replicate across platforms; "
-     "(ii) does it vary across PAM50 subtypes."),
+     "(ii) exploratory assessment of heterogeneity across PAM50 subtypes."),
     ("Study design (retrospective/prospective)", "Methods",
      "Five retrospective public datasets: four survival-analysis cohorts and one "
      "biology-only cohort (GSE45827); no new data generated; the derivation cohort "

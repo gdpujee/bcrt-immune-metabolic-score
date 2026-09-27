@@ -3,6 +3,7 @@
 **Document Version:** 1.0  
 **Repository:** `gdpujee/bcrt-immune-metabolic-score`  
 **Purpose:** Audit trail documenting the frozen model specification, safeguards against post-hoc tuning, and the authors' chronology of external validation.
+**Associated manuscript:** *Cross-platform transportability of a locked immune–metabolic transcriptional score for breast cancer overall survival*.
 
 ---
 
@@ -70,7 +71,7 @@ where $X_i$ is the $\log_2$ gene expression level, $\mu_i$ is the derivation-coh
 | :--- | :--- | :--- | :--- |
 | **Model Lock** | `1b4c2c0` | 2026-09-20 01:07:21 | Model parameters, standardization parameters, and cutoff frozen. Initial validation on same-platform GSE20685 ($n=327$). |
 | **SCAN-B RNA-seq Validation** | `88972bc` | 2026-09-20 06:38:50 | Applied locked model without re-training to SCAN-B GSE96058 ($n=3,273$). Identified PAM50 heterogeneity. |
-| **METABRIC Extension** | `d50651b` | 2026-09-26 07:31:10 | Applied locked model without re-training to METABRIC ($n=1,980$). Tested PAM50 interaction replication. |
+| **METABRIC Extension** | `d50651b` | 2026-09-26 07:31:10 | Applied locked model without re-training to METABRIC ($n=1,980$). Tested replication using the available CLAUDIN_SUBTYPE annotation. |
 
 **Public verifiability status (updated 2026-09-27).** The three hashes above
 come from the development repository's full history (347 commits) and are kept
@@ -79,8 +80,8 @@ remains local to protect pre-publication drafting files, so those specific commi
 hashes are not resolvable on the public remote and are not claimed to be.
 
 What IS publicly checkable: the open code-and-data release at
-`https://github.com/gdpujee/bcrt-immune-metabolic-score` (first commit `b1ff2b1`,
-tagged `v1.0.1`) contains `results/derived/locked_model.json` with exactly the
+`https://github.com/gdpujee/bcrt-immune-metabolic-score`, tagged `v1.0.1`,
+contains `results/derived/locked_model.json` with exactly the
 SHA-256 recorded above (`e8f2e00c…917baf`, independently verifiable by anyone
 who clones that commit). The public release thus verifies the frozen parameter
 artifact and checksum; the original development timeline is documented by the
@@ -92,4 +93,4 @@ authors' local history.
 
 1. **No Post-Hoc Tuning:** No features were added or deleted, no coefficients refit, and no cutoffs readjusted in any validation cohort.
 2. **Outcome-Blind Scoring:** Standardized score calculations in validation cohorts used only gene expression data and were executed blinded to clinical follow-up and survival endpoints.
-3. **Full Disclosure of Limitations:** Failures of absolute cutoff transport (SCAN-B 4.77% high; METABRIC 96.41% high) and non-replication of PAM50 heterogeneity in METABRIC ($p=0.42$) are transparently reported without selective omission.
+3. **Full Disclosure of Limitations:** Failures of absolute cutoff transport (SCAN-B 4.77% high; METABRIC 96.41% high) and non-reproduction of the exploratory SCAN-B five-class PAM50 pattern in the broader METABRIC CLAUDIN_SUBTYPE analysis ($p=0.42$) are transparently reported without selective omission.

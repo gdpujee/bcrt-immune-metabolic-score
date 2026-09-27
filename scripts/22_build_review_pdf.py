@@ -8,7 +8,7 @@ Outputs: submission_bcrt/manuscript_review.pdf, logs/review_pdf.log
 """
 import re
 import os
-import matplotlib
+import importlib.util
 import pandas as pd
 from pathlib import Path
 from reportlab.lib.pagesizes import A4
@@ -16,7 +16,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_LEFT
 from reportlab.platypus import (SimpleDocTemplate, Paragraph, Spacer, Image,
-                                Table, TableStyle, PageBreak)
+                                Table, TableStyle, PageBreak, KeepTogether)
 from reportlab.lib import colors
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
@@ -33,8 +33,19 @@ FIG = ROOT / "figures"
 TAB = ROOT / "tables"
 OUT = ROOT / "submission_bcrt" / "manuscript_review.pdf"
 LOGS = ROOT / "logs"
-FONT = os.path.join(os.path.dirname(matplotlib.__file__), "mpl-data",
-                    "fonts", "ttf", "DejaVuSans.ttf")
+FONT = None
+if importlib.util.find_spec("matplotlib"):
+    import matplotlib
+    FONT = os.path.join(os.path.dirname(matplotlib.__file__), "mpl-data",
+                        "fonts", "ttf", "DejaVuSans.ttf")
+if FONT is None or not os.path.isfile(FONT):
+    _reportlab_fonts = Path(pdfmetrics.__file__).parents[1] / "fonts"
+    FONT = next((p for p in ("/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+                             "/Library/Fonts/Arial Unicode.ttf",
+                             str(_reportlab_fonts / "Vera.ttf"))
+                 if os.path.isfile(p)), None)
+if FONT is None:
+    raise SystemExit("no Unicode TrueType font found (install matplotlib or provide a system font)")
 pdfmetrics.registerFont(TTFont("DVS", FONT))
 pdfmetrics.registerFontFamily("DVS", normal="DVS", bold="DVS",
                               italic="DVS", boldItalic="DVS")
@@ -254,6 +265,7 @@ def make_table_flowables(tbl_id, tsv_file):
 story = []
 lines = MS.read_text().split("\n")
 i, nfig, ntbl = 0, 0, 0
+table_heading = None
 while i < len(lines):
     ln = lines[i].rstrip()
     if ln.startswith("# "):
@@ -261,14 +273,17 @@ while i < len(lines):
     elif ln.startswith("### "):
         story.append(Paragraph(rich(ln[4:]), h3))
     elif ln.startswith("## "):
-        story.append(Paragraph(rich(ln[3:]), h2))
+        if ln[3:].strip() == "Tables":
+            table_heading = Paragraph("Tables", h2)
+        else:
+            story.append(Paragraph(rich(ln[3:]), h2))
     elif ln.startswith("- **Fig"):
-        m = re.match(r"- \*\*(Fig\.? ?S?\d+)\.\*\* (.*)", ln)
+        m = re.match(r"- \*\*(Fig\.? ?S?\d+)\*\* (.*)", ln)
         if m:
             fig_id = m.group(1).replace("Fig ", "Fig. ")
             fig_cap = rich(m.group(2))
             num = re.sub(r"^Fig\.?\s*", "", fig_id)
-            story.append(Paragraph(f"<b>Figure {num}.</b> {fig_cap}", cap))
+            caption = Paragraph(f"<b>{fig_id}</b> {fig_cap}", cap)
             
             fig_file = FIG_MAP.get(fig_id)
             if not fig_file:
@@ -279,16 +294,16 @@ while i < len(lines):
             if not fig_file or not (FIG / fig_file).exists():
                 raise SystemExit(f"no image for {fig_id} (FIG_MAP -> {fig_file!r}); a "
                                  "legend must not render as a caption with no figure")
-            story.append(Image(str(FIG / fig_file), width=150 * mm,
-                               height=100 * mm, kind="proportional"))
-            story.append(Spacer(1, 6))
+            figure = Image(str(FIG / fig_file), width=150 * mm,
+                           height=100 * mm, kind="proportional")
+            story.append(KeepTogether([caption, figure, Spacer(1, 6)]))
             nfig += 1
     elif ln.startswith("- **Table"):
         m = re.match(r"- \*\*(Table \d+)\.\*\* (.*)", ln)
         if m:
             tbl_id = m.group(1)
             tbl_cap = rich(m.group(2))
-            story.append(Paragraph(f"<b>{tbl_id}.</b> {tbl_cap}", cap))
+            caption = Paragraph(f"<b>{tbl_id}.</b> {tbl_cap}", cap)
             
             tbl_file = TBL_MAP.get(tbl_id)
             if not tbl_file:
@@ -298,7 +313,11 @@ while i < len(lines):
             
             if tbl_file and (TAB / tbl_file).exists():
                 t_flowables = make_table_flowables(tbl_id, tbl_file)
-                story.extend(t_flowables)
+                group = [caption, *t_flowables]
+                if table_heading is not None:
+                    group.insert(0, table_heading)
+                    table_heading = None
+                story.append(KeepTogether(group))
                 ntbl += 1
     elif ln.startswith("- "):
         story.append(Paragraph("• " + rich(ln[2:]), body))

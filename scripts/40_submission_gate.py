@@ -33,8 +33,8 @@ Checks
      publishing-model or APC claim, and submission_bcrt/ holds no internal notes
  13. the archive citation is right in every rendered format: the live repository
      URL, the concept DOI, and no superseded version DOI
- 14. the three suggested-reviewer addresses appear only in the cover letter and in
-     the provenance table that records where each was read from
+ 14. the three suggested-reviewer addresses appear only in the current cover letter,
+     their provenance table, and the preserved historical review-pack cover letter
 
 Exit status is non-zero if any check fails.
 
@@ -42,6 +42,7 @@ Outputs: logs/submission_gate.log
 """
 import json
 import re
+import tempfile
 import subprocess
 import sys
 from pathlib import Path
@@ -72,8 +73,8 @@ def mask(addr):
     """Domain only.
 
     This gate writes `logs/submission_gate.log`, which is a tracked file, so an
-    address echoed into a check detail would defeat check 14 — the addresses must
-    appear nowhere but the cover letter and the provenance table.
+    address echoed into a check detail would defeat check 14 — the addresses belong
+    only in correspondence/provenance files and the preserved historical cover letter.
     """
     return "@" + addr.split("@", 1)[1]
 
@@ -96,9 +97,9 @@ def section(lines, heading):
 # submission_bcrt/ holds only files that can be uploaded.  README.md used to be in
 # this list; it was an index describing the build, moved to review/PACKAGE_INDEX.md,
 # and the supplement is now delivered as a PDF as BCRT requires.
-DELIVERABLES = ["manuscript_final.pdf", "manuscript_review.pdf", "manuscript_bcrt.docx",
+DELIVERABLES = ["manuscript_final.pdf", "manuscript_review.pdf", "manuscript_bcrt.doc",
                 "manuscript_bcrt.tex", "manuscript_submission.md", "supplement.md",
-                "Supplementary_Information.pdf", "legends.md", "title_page.md",
+                "ESM_1.pdf", "legends.md", "title_page.md",
                 "declarations.md", "abstract_structured.md",
                 "references_numbered.md", "cover_letter.md", "REMARK_checklist.md"]
 
@@ -112,17 +113,20 @@ for f in DELIVERABLES:
     if p.suffix == ".pdf":
         from pypdf import PdfReader
         txt = "\n".join(pg.extract_text() or "" for pg in PdfReader(str(p)).pages)
-    elif p.suffix == ".docx":
-        from docx import Document
-        doc = Document(str(p))
-        txt = "\n".join(par.text for par in doc.paragraphs)
-        for tb in doc.tables:
-            for row in tb.rows:
-                txt += "\n" + "\t".join(c.text for c in row.cells)
+    elif p.suffix == ".doc":
+        with tempfile.TemporaryDirectory(prefix="submission-gate-doc-") as td:
+            conv = subprocess.run(
+                ["soffice", "--headless", "--convert-to", "txt:Text", "--outdir", td,
+                 str(p)], capture_output=True, text=True)
+            txt_path = Path(td) / (p.stem + ".txt")
+            if conv.returncode or not txt_path.is_file():
+                raise SystemExit("cannot inspect manuscript_bcrt.doc: " +
+                                 (conv.stderr or conv.stdout)[-500:])
+            txt = txt_path.read_text(errors="replace")
     else:
         txt = p.read_text()
     texts[f] = txt
-    # PDF/DOCX extraction inserts line breaks at cell and column edges, so every
+    # PDF/Word extraction inserts line breaks at cell and column edges, so every
     # containment test below runs on a whitespace-collapsed copy; otherwise a
     # correct render can look absent (and a wrapping defect can look fine).
     flats[f] = re.sub(r"\s+", " ", txt)
@@ -265,24 +269,46 @@ LEGIBILITY = {
                                 for c in ("GSE20685", "SCANB", "METABRIC")],
 }
 for label, tokens in LEGIBILITY.items():
-    for f in ("manuscript_final.pdf", "manuscript_review.pdf", "manuscript_bcrt.docx"):
+    for f in ("manuscript_final.pdf", "manuscript_review.pdf", "manuscript_bcrt.doc"):
         if f not in flats:
             continue
         bad = [t for t in tokens if t not in flats[f]]
         check(f"{label} intact in {f}", not bad, f"broken/absent={bad}")
 
 # ---------------------------------------------------------------- 8. supplement package
-for f in ["supplement.md", "Supplementary_Information.pdf", "REMARK_checklist.md"]:
+for f in ["supplement.md", "ESM_1.pdf", "REMARK_checklist.md"]:
     check(f"package contains {f}", (SUB / f).exists())
 remark = texts.get("REMARK_checklist.md", "")
 n_items = len(re.findall(r"^\|\s*\d+", remark, re.M))
 check("REMARK checklist covers all 20 items", n_items >= 20, f"{n_items} numbered rows")
 
+# BCRT caption format and supplement references are easy to regress when the
+# manuscript is rebuilt from its Markdown source.
+main_fig_captions = re.findall(
+    r"(?m)^- \*\*(Fig\. \d+)\*\* (.+)$", ms_txt)
+main_fig_labels = [label for label, _ in main_fig_captions]
+check("main figure captions use the BCRT Fig. n label for Figures 1-12",
+      main_fig_labels == [f"Fig. {n}" for n in range(1, 13)],
+      str(main_fig_labels))
+bad_caption_ends = [label for label, caption in main_fig_captions
+                    if re.search(r"[.!?]\s*$", caption)]
+check("main figure captions have no terminal punctuation",
+      not bad_caption_ends, str(bad_caption_ends))
+check("body and Table S1 cite Online Resource 1",
+      "Supplementary Information (Online Resource 1)" in ms_txt
+      and "Table S1" in ms_txt and "Table S1" in texts.get("legends.md", "")
+      and "Online Resource 1" in texts.get("legends.md", "")
+      and "(Online Resource 1)." in ms_txt,
+      "main text, Table S1 caption, and legends")
+check("supplement identifies itself as Online Resource 1",
+      "Online Resource 1." in texts.get("supplement.md", ""),
+      "supplement.md")
+
 
 def norm(s):
     """Flatten for cross-format comparison.
 
-    PDF and DOCX extraction inserts line breaks at cell and column edges, and LaTeX
+    PDF and Word extraction inserts line breaks at cell and column edges, and LaTeX
     escapes punctuation, so a containment test on the raw text can report a
     correctly rendered section as missing — and, worse, a mis-ordered one as fine.
     """
@@ -334,9 +360,9 @@ check("structured abstract within the BCRT 150-250 word range", 150 <= n_abs <= 
 
 # "Statements and Declarations ... should be placed after the References section."
 # Asserted against every rendered format: the markdown order was already right while
-# the DOCX still ended with the reference list, which is what the review caught.
+# the Word file still ended with the reference list, which is what the review caught.
 n_refs = len(re.findall(r"^\[(\d+)\]", (SUB / "references_numbered.md").read_text(), re.M))
-for f in ("manuscript_submission.md", "manuscript_bcrt.tex", "manuscript_bcrt.docx",
+for f in ("manuscript_submission.md", "manuscript_bcrt.tex", "manuscript_bcrt.doc",
           "manuscript_final.pdf", "manuscript_review.pdf"):
     flat = norm(flats.get(f, ""))
     i_st = flat.find("Statements and Declarations")
@@ -348,14 +374,24 @@ for f in ("manuscript_submission.md", "manuscript_bcrt.tex", "manuscript_bcrt.do
           0 <= i_last < i_st, f"last_ref@{i_last} statements@{i_st}")
 
 # ---------------------------------------------------------------- 10. supplement PDF
-supp_pdf = SUB / "Supplementary_Information.pdf"
+supp_pdf = SUB / "ESM_1.pdf"
 if supp_pdf.exists():
     raw = supp_pdf.read_bytes()
     from pypdf import PdfReader
     pages = PdfReader(str(supp_pdf)).pages
     p1 = norm(pages[0].extract_text() or "")
     supp_flat = norm("\n".join(pg.extract_text() or "" for pg in pages))
-    HEADER = {"article title": "Cross-platform external validation",
+    remark_items = []
+    for ln in (SUB / "REMARK_checklist.md").read_text().splitlines():
+        if re.match(r"^\|\s*\d+\s*\|", ln):
+            cells = [c.strip() for c in ln.strip().strip("|").split("|")]
+            if len(cells) >= 2:
+                remark_items.append(cells[1])
+    missing_remark = [item for item in remark_items if norm(item) not in supp_flat]
+    check("Supplementary PDF includes all 20 REMARK checklist items",
+          len(remark_items) == 20 and not missing_remark,
+          f"{len(remark_items)} items; missing={missing_remark}")
+    HEADER = {"article title": title,
               "journal name": "Breast Cancer Research and Treatment",
               "author names": "Danhua He",
               "corresponding author": "Qiang Li",
@@ -384,7 +420,7 @@ if supp_pdf.exists():
     # this check following it.
     leg = texts.get("legends.md", "")
     supp_figs = []
-    for m in re.finditer(r"(?m)^- \*\*(Fig\. S\d+)\.\*\* (.+)$", leg):
+    for m in re.finditer(r"(?m)^- \*\*(Fig\. S\d+)\*\* (.+)$", leg):
         supp_figs.append((m.group(1), norm(m.group(2))[:45]))
     check("legends.md lists the supplementary figures", len(supp_figs) >= 4,
           f"{[s[0] for s in supp_figs]}")
@@ -453,13 +489,14 @@ check("every reviewer address is institutional (no free-mail domain)",
       bool(addr) and all(not re.search(
           r"@(gmail|hotmail|yahoo|outlook|live|qq|163|126|foxmail|sina)\.",
           a, re.I) for a in addr), str([mask(a) for a in addr]))
+check("cover letter is addressed to the current Editor-in-Chief",
+      "Aditya Bardia, MD" in cl and "Dear Dr. Bardia," in cl,
+      "Aditya Bardia, MD")
 
 # submission_bcrt/ is what gets uploaded, so anything that is not an uploadable
 # file is a packaging defect rather than clutter.
 strays = sorted(p.name for p in SUB.iterdir()
-                if p.is_file() and p.name not in DELIVERABLES
-                and p.suffix.lower() in (".md", ".txt", ".json", ".py", ".log",
-                                         ".csv", ".yaml", ".yml"))
+                if p.is_file() and p.name not in DELIVERABLES)
 check("submission_bcrt holds only uploadable files", not strays, str(strays))
 
 # ---------------------------------------------------------------- 13. archive DOI
@@ -467,30 +504,31 @@ check("submission_bcrt holds only uploadable files", not strays, str(strays))
 # for that statement to be wrong without anything noticing: the URL drifts from the
 # one that is actually live, or the archive is cited by a VERSION DOI — which pins
 # a single release, and the release that existed when this was written no longer
-# matched the manuscript.  Asserted in every rendered format, not just the source.
 CONCEPT_DOI = "10.5281/zenodo.22994650"
+VERSION_DOI = "10.5281/zenodo.22995292"
 REPO_URL = "https://github.com/gdpujee/bcrt-immune-metabolic-score"
 DOI_FILES = ["manuscript_submission.md", "declarations.md", "supplement.md",
-             "Supplementary_Information.pdf", "manuscript_final.pdf",
-             "manuscript_review.pdf", "manuscript_bcrt.docx", "manuscript_bcrt.tex"]
+             "ESM_1.pdf", "manuscript_final.pdf",
+             "manuscript_review.pdf", "manuscript_bcrt.doc", "manuscript_bcrt.tex"]
 for f in DOI_FILES:
     flat = url_text(flats.get(f, ""))
-    check(f"{f}: cites the concept DOI", CONCEPT_DOI in flat, CONCEPT_DOI)
+    check(f"{f}: cites the version DOI", VERSION_DOI in flat, VERSION_DOI)
     check(f"{f}: cites the live repository URL", REPO_URL in flat, REPO_URL)
     wrong = sorted({d for d in re.findall(r"10\.5281/zenodo\.\d+", flat)
-                    if d != CONCEPT_DOI})
+                    if d not in (CONCEPT_DOI, VERSION_DOI)})
     check(f"{f}: cites no superseded version DOI", not wrong, str(wrong))
 
 # ----------------------------------------------------- 14. third-party addresses
-# The three suggested-reviewer addresses belong in the cover letter, which is sent
-# to the journal, and in the provenance table recording where each was read from.
-# Anywhere else is a defect, because this repository's `origin` is the public
-# GitHub remote: a tracked file is one `git push` from publishing the names and
-# institutional addresses of three people who were never asked.  The list is
-# derived from the cover letter rather than hard-coded, so a fourth reviewer is
-# covered the moment they are added — and the scan covers the gate's own log, which
-# is why section 12 reports domains instead of addresses.
-ADDRESS_ALLOWED = {"submission_bcrt/cover_letter.md", "review/REVIEWER_EMAILS.md"}
+# Suggested-reviewer addresses belong in the current cover letter and the
+# provenance table. The tracked historical review pack also contains its archived
+# cover letter; preserve that audit snapshot while keeping the upload package
+# limited to the current submission_bcrt/ files. The separate public-release
+# exporter has its own allow-list and explicitly excludes all three locations.
+ADDRESS_ALLOWED = {
+    "submission_bcrt/cover_letter.md",
+    "review/REVIEWER_EMAILS.md",
+    "bio_dsh_review_pack/05_Cover_letter.md",
+}
 third_party = sorted({m.group(0) for m in ADDR_RE.finditer(cl)} - AUTHOR_ADDRESSES)
 check("third-party addresses derived from the cover letter", len(third_party) >= 3,
       f"{len(third_party)} address(es) that are not an author's")
@@ -511,7 +549,7 @@ for rel in tracked:
     n = sum(1 for a in third_party if a in t)
     if n:
         stray.append(f"{rel} ({n} address(es))")
-check("third-party addresses appear only in the two declared files", not stray,
+check("third-party addresses appear only in declared correspondence/archive files", not stray,
       ", ".join(stray[:5]))
 # Evidence that the scan read the tree rather than skipping it: without a floor, a
 # broken walk would report PASS on zero files.

@@ -38,6 +38,7 @@ def tex(t):
     t = t.replace("→", r"$\rightarrow$")
     t = t.replace("≥", r"$\geq$")
     t = t.replace("≤", r"$\leq$")
+    t = t.replace("≈", r"$\approx$")
     t = t.replace("−", r"$-$")
     t = t.replace("∩", r"$\cap$")
     t = t.replace("∪", r"$\cup$")
@@ -50,7 +51,7 @@ def tex(t):
     t = re.sub(r"\b([0-9.]+)e-([0-9]+)\b", r"$\1\\times 10^{-\2}$", t)
     
     t = t.replace("×", r"$\times$")
-    t = t.replace("–", "--").replace("—", "---")
+    t = t.replace("’", "'").replace("–", "--").replace("—", "---")
     t = t.replace("/", r"/\allowbreak ")
     t = re.sub(r"\|log2FC\|([><]=?)([0-9.]+)", r"$|\\mathrm{log}_2\\mathrm{FC}| \1 \2$", t)
     
@@ -144,7 +145,7 @@ for ln in MS.read_text().split("\n"):
     elif skip_sec:
         continue
     elif ln.startswith("- **Fig"):
-        m = re.match(r"- \*\*(Fig\.? ?S?\d+)\.\*\* (.*)", ln)
+        m = re.match(r"- \*\*(Fig\.? ?S?\d+)\*\* (.*)", ln)
         if m:
             fig_id = m.group(1).replace("Fig ", "Fig. ")
             fig_cap = tex(m.group(2))
@@ -154,13 +155,15 @@ for ln in MS.read_text().split("\n"):
                 if f_search:
                     fig_file = f_search.group(1) + ".pdf"
             
-            out += ["\\begin{figure}[htbp]", "\\centering"]
+            out += ["\\begin{figure}[htbp]", "\\centering",
+                    "\\captionsetup{labelformat=empty}"]
             if not fig_file or not (FIG / fig_file).exists():
                 raise SystemExit(f"no image for {fig_id} (FIG_MAP -> {fig_file!r}); a "
                                  "legend must not render as a caption with no figure")
             out.append("\\includegraphics[width=0.92\\textwidth]{../../figures/%s}" % fig_file)
             nfig += 1
-            out += ["\\caption{%s}" % fig_cap, "\\end{figure}"]
+            out += ["\\caption{{\\bf %s} %s}" % (tex(fig_id), fig_cap),
+                    "\\end{figure}"]
     elif ln.startswith("- **Table"):
         m = re.match(r"- \*\*(Table \d+)\.\*\* (.*)", ln)
         if m:
@@ -236,6 +239,8 @@ if _odd:
                      + " — add them to tex() so the engine does not drop them")
 
 OUT_LATEX.write_text(latex_content)
-OUT_BCRT.write_text(latex_content)
+# The internal source sits at manuscript/latex; the submission source sits at
+# submission_bcrt. Give each file a relative path that resolves from its location.
+OUT_BCRT.write_text(latex_content.replace('../../figures/', '../figures/'))
 log(f"LATEXSRC-001: {OUT_LATEX.name} and {OUT_BCRT.name} written with {nfig} figures + {ntbl} tables")
 logf.close()
