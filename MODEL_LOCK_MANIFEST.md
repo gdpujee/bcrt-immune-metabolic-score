@@ -2,7 +2,7 @@
 
 **Document Version:** 1.0  
 **Repository:** `gdpujee/bcrt-immune-metabolic-score`  
-**Purpose:** Pre-specification audit trail demonstrating model freezing and absence of post-hoc tuning or data leakage across external validation cohorts.
+**Purpose:** Audit trail documenting the frozen model specification, safeguards against post-hoc tuning, and the authors' chronology of external validation.
 
 ---
 
@@ -80,7 +80,7 @@ hashes are not resolvable on the public remote and are not claimed to be.
 
 What IS publicly checkable: the open code-and-data release at
 `https://github.com/gdpujee/bcrt-immune-metabolic-score` (first commit `b1ff2b1`,
-tagged `v1.0.0`) contains `results/derived/locked_model.json` with exactly the
+tagged `v1.0.1`) contains `results/derived/locked_model.json` with exactly the
 SHA-256 recorded above (`e8f2e00c…917baf`, independently verifiable by anyone
 who clones that commit). The public release thus verifies the frozen parameter
 artifact and checksum; the original development timeline is documented by the
