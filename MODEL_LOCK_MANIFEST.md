@@ -74,18 +74,17 @@ where $X_i$ is the $\log_2$ gene expression level, $\mu_i$ is the derivation-coh
 
 **Public verifiability status (updated 2026-09-27).** The three hashes above
 come from the development repository's full history (347 commits) and are kept
-as the **original local audit-trail timestamps**: that development repository
-was never public and no longer exists as a remote, so these specific hashes are
-not resolvable on GitHub and are not claimed to be.
+as the **original local audit-trail timestamps**. That full development history
+remains local to protect pre-publication drafting files, so those specific commit
+hashes are not resolvable on the public remote and are not claimed to be.
 
-What IS publicly checkable: the code-and-data release now lives at
-`https://github.com/gdpujee/bcrt-immune-metabolic-score`, whose first commit
-`b1ff2b1` ("Lock: freeze 14-gene score, coefficients, normalization and
-cutoff") contains `results/derived/locked_model.json` with exactly the SHA-256
-recorded above (`e8f2e00c…917baf`, independently reproducible by anyone who
-clones that commit), tagged `v1.0.0`. The freeze-before-validation ordering
-claim is therefore verifiable in the public tree, and the local 347-commit
-history corroborates it without being required for it.
+What IS publicly checkable: the open code-and-data release at
+`https://github.com/gdpujee/bcrt-immune-metabolic-score` (first commit `b1ff2b1`,
+tagged `v1.0.0`) contains `results/derived/locked_model.json` with exactly the
+SHA-256 recorded above (`e8f2e00c…917baf`, independently verifiable by anyone
+who clones that commit). The public release thus verifies the frozen parameter
+artifact and checksum; the original development timeline is documented by the
+authors' local history.
 
 ---
 
