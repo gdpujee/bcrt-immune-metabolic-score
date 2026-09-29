@@ -1,6 +1,6 @@
 {
   "title": "What transfers and what does not: cross-platform evaluation of a fixed immune–metabolic transcriptional score for breast cancer overall survival",
-  "description": "<p>Analysis code and derived data accompanying the manuscript “What transfers and what does not: cross-platform evaluation of a fixed immune–metabolic transcriptional score for breast cancer overall survival.”</p><p>A 14-gene score was derived in GSE42568 (104 tumours, 35 deaths). The model-lock record and initial GSE20685 analysis are in the same commit, so their order cannot be established; GSE20685 is treated as supportive same-platform evidence. Subsequent commits document application of the fixed parameters without refitting or recentering to SCAN-B GSE96058 (RNA-seq, 3,273 patients) and METABRIC (Illumina HT-12, 1,980 patients). Positive cohort-level average per-SD associations were observed, but the METABRIC estimate reversed after 5 years. The locked absolute cutoff did not transport, and score-scale sensitivities are reported separately from absolute-risk calibration.</p><p>The exploratory five-class PAM50 heterogeneity pattern in SCAN-B was not reproduced in the broader METABRIC CLAUDIN_SUBTYPE analysis (global interaction p=0.42). The archive includes the conditional-alpha bootstrap stability and outcome-blind score-scale sensitivity scripts and outputs, pipeline scripts, derived result files (JSON/TSV), figure sources and derived tables, but not the primary expression or clinical data, which are obtained from public accessions named in the repository README.</p>",
+  "description": "<p>Analysis code and derived data accompanying the manuscript “What transfers and what does not: cross-platform evaluation of a fixed immune–metabolic transcriptional score for breast cancer overall survival.”</p><p>A 14-gene score was derived in GSE42568 (104 tumours, 35 deaths). The model-lock record and initial GSE20685 analysis are in the same commit, so their order cannot be established; GSE20685 is treated as supportive same-platform evidence. Subsequent commits document application of the fixed parameters without refitting or recentering to SCAN-B GSE96058 (RNA-seq, 3,273 patients) and METABRIC (Illumina HT-12, 1,980 patients). Positive cohort-level average per-SD associations were observed, but the METABRIC estimated HR was below 1 after the 5-year split. The locked absolute cutoff did not transport, and score-scale sensitivities are reported separately from absolute-risk calibration.</p><p>The exploratory five-class PAM50 heterogeneity pattern in SCAN-B was not reproduced in the broader METABRIC CLAUDIN_SUBTYPE analysis (global interaction p=0.42). The archive includes the conditional-alpha bootstrap stability and outcome-blind score-scale sensitivity scripts and outputs, pipeline scripts, derived result files (JSON/TSV), figure sources and derived tables, but not the primary expression or clinical data, which are obtained from public accessions named in the repository README.</p>",
   "creators": [
     {
       "name": "He, Danhua",
@@ -28,7 +28,7 @@
   "upload_type": "software",
   "access_right": "open",
   "language": "eng",
-  "version": "v1.0.6",
+  "version": "v1.0.7",
   "related_identifiers": [
     {
       "identifier": "https://github.com/gdpujee/bcrt-immune-metabolic-score",

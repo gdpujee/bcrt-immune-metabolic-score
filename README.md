@@ -3,9 +3,9 @@
 Analysis code and derived data tables accompanying the manuscript *What transfers and what does not: cross-platform evaluation of a fixed immune–metabolic transcriptional score for breast cancer overall survival*,
 prepared for submission to *Breast Cancer Research and Treatment*.
 
-**Archive:** [v1.0.6 (version DOI)](https://doi.org/10.5281/zenodo.23037317); [concept DOI (latest version)](https://doi.org/10.5281/zenodo.22994650).
+**Archive:** v1.0.7 release pending DOI registration; [concept DOI](https://doi.org/10.5281/zenodo.22994650).
 
-GitHub `main` includes subsequent terminology-only corrections: the raw-score Cox coefficient is no longer labelled a calibration slope, and the submission PDFs use the 2026-09-29 release date. The immutable v1.0.6 archive retains the original internal `calib_slope` field name; its numerical results are unchanged.
+v1.0.7 includes terminology-only corrections: the raw-score Cox coefficient is no longer labelled a calibration slope. These changes do not alter any numerical analysis results.
 
 ## What the analysis does
 
@@ -88,8 +88,8 @@ a download can be verified with `sha256sum -c MANIFEST.sha256`.
 
 ## Citation
 
-Cite the archived release and the article. This repository snapshot is archived as [v1.0.6](https://doi.org/10.5281/zenodo.23037317); the concept DOI above always resolves to the latest version.
-`CITATION.cff` carries machine-readable metadata, including the exact version DOI.
+Cite the archived release and the article. This repository snapshot is the v1.0.7 release candidate; the concept DOI above resolves to the latest published version.
+`CITATION.cff` carries machine-readable metadata; the version DOI will be added after Zenodo registration.
 
 ## Licence
 

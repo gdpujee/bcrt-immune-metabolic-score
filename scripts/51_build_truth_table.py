@@ -215,7 +215,7 @@ CHECKS = [
     ("METABRIC adjusted cox.zph global p", "sup", "5.65e-31"),
     ("METABRIC adjusted cox.zph", "resp", "5.645\\times10^{-31}"),
     ("abstract cohort-specific early effects", "ms",
-     "the estimated association was below 1 after the 5-year split"),
+     "the HR was 1.54 (1.41–1.68) through 5 years and 0.92 (0.85–0.99) thereafter"),
     ("conclusion cohort-specific time dependence", "ms",
      "average estimates do not imply a persistent adverse association in METABRIC"),
     ("early-hazard citation", "ms", "recurrence hazard during the early years after breast cancer diagnosis [20]"),
