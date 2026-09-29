@@ -3,7 +3,7 @@
 Analysis code and derived data tables accompanying the manuscript *What transfers and what does not: cross-platform evaluation of a fixed immune–metabolic transcriptional score for breast cancer overall survival*,
 submitted to *Breast Cancer Research and Treatment*.
 
-**Archived software version:** v1.0.2. The version DOI is listed on its Zenodo record.
+**Archived software version:** v1.0.3. The version DOI is listed on its Zenodo record.
 *(Concept DOI for all versions: [10.5281/zenodo.22994650](https://doi.org/10.5281/zenodo.22994650))*
 
 ## What the analysis does

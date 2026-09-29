@@ -225,11 +225,24 @@ try:
     req = urllib.request.Request(f"https://doi.org/{CONCEPT_DOI}",
                                  headers={"User-Agent": "bio-dsh-public-release-audit/1.0"})
     with urllib.request.urlopen(req, timeout=30) as r:
-    check("the concept DOI resolves", r.status == 200, r.geturl())
+        check("the concept DOI resolves", r.status == 200, r.geturl())
 except urllib.error.HTTPError as e:
     check("the concept DOI resolves", False, f"HTTP {e.code}")
 except Exception as e:                                   # noqa: BLE001
     note("the concept DOI resolves", f"{type(e).__name__}: {e}")
+
+if VERSION_DOI:
+    try:
+        req = urllib.request.Request(f"https://doi.org/{VERSION_DOI}",
+                                     headers={"User-Agent": "bio-dsh-public-release-audit/1.0"})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            check("the current version DOI resolves", r.status == 200, r.geturl())
+    except urllib.error.HTTPError as e:
+        check("the current version DOI resolves", False, f"HTTP {e.code}")
+    except Exception as e:                               # noqa: BLE001
+        note("the current version DOI resolves", f"{type(e).__name__}: {e}")
+else:
+    note("the current version DOI resolves", "the Zenodo GitHub release hook has not minted it yet")
 
 # ------------------------------------------------------------------- 5. Zenodo record
 try:
