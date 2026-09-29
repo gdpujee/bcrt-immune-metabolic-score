@@ -73,7 +73,9 @@ def inc_txt(inc, prefix="ΔC"):
     improvement, however small the point estimate looks."""
     lo, hi = inc["delta_C_CI95_boot500"]
     spans0 = lo <= 0 <= hi
-    base = (f"{prefix} {inc['delta_C']:+.3f} [{lo:+.3f},{hi:+.3f}] "
+    fmt_bound = lambda x: f"{x:+.4f}" if abs(x) < 0.001 else f"{x:+.3f}"
+    base = (f"{prefix} {inc['delta_C']:+.3f} "
+            f"[{fmt_bound(lo)},{fmt_bound(hi)}] "
             f"(bootstrap 500, seed 42)")
     if spans0:
         base += " — the interval includes zero, so the added discrimination is not " \

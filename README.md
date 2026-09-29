@@ -3,12 +3,11 @@
 Analysis code and derived data tables accompanying the manuscript *What transfers and what does not: cross-platform evaluation of a fixed immune–metabolic transcriptional score for breast cancer overall survival*,
 prepared for submission to *Breast Cancer Research and Treatment*.
 
-**Archived software version:** [v1.0.4](https://doi.org/10.5281/zenodo.23031517) (version DOI: [10.5281/zenodo.23031517](https://doi.org/10.5281/zenodo.23031517)).
-*(Concept DOI for all versions: [10.5281/zenodo.22994650](https://doi.org/10.5281/zenodo.22994650))*
+**Archive:** [Concept DOI for this project (latest version)](https://doi.org/10.5281/zenodo.22994650).
 
 ## What the analysis does
 
-A 14-gene immune–metabolic score was built in GSE42568 (104 tumours, 35 deaths). The recorded score was evaluated in GSE20685, but the model-lock record and initial GSE20685 analysis share a commit, so their order cannot be established; we treat GSE20685 as supportive same-platform evidence. Subsequent commits document application of the fixed parameters without refitting or recentering to SCAN-B and METABRIC. The primary cross-platform evidence therefore comes from these two later evaluations; the absolute cutoff and calibration are reported as separate failure dimensions.
+A 14-gene immune–metabolic score was built in GSE42568 (104 tumours, 35 deaths). The recorded score was evaluated in GSE20685, but the model-lock record and initial GSE20685 analysis share a commit, so their order cannot be established; we treat GSE20685 as supportive same-platform evidence. Subsequent commits document application of the fixed parameters without refitting or recentering to SCAN-B and METABRIC. The primary cross-platform evidence therefore comes from these two later evaluations; the absolute cutoff and score scale are assessed as separate transportability dimensions.
 
 | Cohort | Accession | Assay | Analysable | Deaths | Evidence role |
 |---|---|---|---|---|---|
@@ -16,10 +15,7 @@ A 14-gene immune–metabolic score was built in GSE42568 (104 tumours, 35 deaths
 | SCAN-B | GSE96058 | RNA-seq | 3,273 patients | 336 | Subsequent fixed-parameter cross-platform validation |
 | METABRIC | cBioPortal `brca_metabric` | Illumina HT-12 | 1,980 patients | 1,143 | Subsequent fixed-parameter cross-platform validation |
 
-The primary estimand is the continuous per-SD association from Cox regression. Same-direction continuous associations were observed in GSE20685 and in the two later fixed-parameter applications (per-SD HR 1.59 [95% CI 1.29–1.98], 1.44 [1.31–1.59] and 1.13 [1.07–1.20]); the absolute cutoff did not transport. The exploratory five-class PAM50 heterogeneity pattern seen in SCAN-B
-was not reproduced in the broader METABRIC CLAUDIN_SUBTYPE analysis (global
-interaction p=0.42). Effects were time-dependent in the two
-microarray cohorts, so those estimates are averages over follow-up.
+The primary estimand is the continuous per-SD association from Cox regression. Positive cohort-level average per-SD associations were observed in GSE20685 and in the later fixed-parameter applications to SCAN-B and METABRIC (HR 1.59 [95% CI 1.29–1.98], 1.44 [1.31–1.59] and 1.13 [1.07–1.20], respectively). The METABRIC estimate reversed after 5 years (≤5-year HR 1.54 [1.41–1.68]; >5-year HR 0.92 [0.85–0.99]), so the positive average does not imply a persistent adverse association. The absolute cutoff did not transport. The exploratory five-class PAM50 heterogeneity pattern seen in SCAN-B was not reproduced in the broader METABRIC CLAUDIN_SUBTYPE analysis (global interaction p=0.42). Effects were time-dependent in the two microarray cohorts, so those estimates are averages over follow-up.
 
 ## Repository layout
 
@@ -73,7 +69,7 @@ its contract. The stages are:
 | RNA-seq validation | `10`–`11`, `17` | SCAN-B parse and locked validation |
 | Cross-platform validation | `27`, `33`, `38`, `41`, `42` | METABRIC, clinically adjusted Cox, one per-SD scale, multiplicity, cutoff splits |
 | Proportional hazards | `28`, `32`, `35` | Residual screen, exact Grambsch–Therneau test, time-varying coefficient model |
-| Subgroup and sensitivity | `12`–`15`, `18`–`20`, `29`, `31` | Clinical value, PAM50, ER-stratified, probe mapping, gene overlap, bootstrap stability |
+| Subgroup and sensitivity | `12`–`15`, `18`–`20`, `29`, `31`, `56` | Clinical value, PAM50, ER-stratified, probe mapping, gene overlap, conditional-alpha bootstrap stability and score-scale sensitivity |
 | Figures and tables | `08`, `16`, `21`, `30` | Figure and table generation, sample manifest |
 
 The manuscript builders (`22`–`25`, `34`, `36`, `39`, `44`, `46`) and the consistency

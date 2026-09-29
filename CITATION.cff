@@ -8,9 +8,9 @@ abstract: >-
   derived in GSE42568 and evaluated supportively in GSE20685; the model-lock and
   initial GSE20685 analysis share a commit, so their order is unresolved.
   Subsequent commits document application of fixed parameters without refitting
-  to SCAN-B GSE96058 (RNA-seq) and METABRIC (Illumina HT-12). The continuous
-  per-SD association had the same direction across these cohort evaluations,
-  while the absolute cutoff did not transport. PAM50 heterogeneity in SCAN-B was
+  to SCAN-B GSE96058 (RNA-seq) and METABRIC (Illumina HT-12). Positive
+  cohort-level average per-SD associations were observed, but METABRIC showed a
+  late directional reversal; the absolute cutoff did not transport. PAM50 heterogeneity in SCAN-B was
   exploratory and post hoc and was not reproduced in the broader METABRIC
   CLAUDIN_SUBTYPE analysis.
 authors:
@@ -22,9 +22,8 @@ authors:
     given-names: Qiang
     affiliation: "Unaffiliated / Independent Researcher, Foshan, Guangdong, China"
     orcid: "https://orcid.org/0009-0003-6404-335X"
-version: "v1.0.4"
+version: "v1.0.5"
 date-released: "2026-09-29"
-doi: "10.5281/zenodo.23031517"
 license: MIT
 license-url: "https://opensource.org/licenses/MIT"
 repository-code: "https://github.com/gdpujee/bcrt-immune-metabolic-score"

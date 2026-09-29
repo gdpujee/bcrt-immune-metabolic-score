@@ -142,13 +142,17 @@ ci = [float(np.exp(rc.params[0] - 1.96 * rc.bse[0])),
       float(np.exp(rc.params[0] + 1.96 * rc.bse[0]))]
 hi = (m.risk.values > cutoff).astype(int)
 rb = PHReg(T, hi.reshape(-1, 1), E).fit(disp=0)
+bin_hr = float(np.exp(rb.params[0]))
+bin_ci = [float(np.exp(rb.params[0] - 1.96 * rb.bse[0])),
+          float(np.exp(rb.params[0] + 1.96 * rb.bse[0]))]
+bin_p = float(rb.pvalues[0])
 log(f"PRIMARY continuous per-SD: n={len(m)} deaths={int(E.sum())} "
     f"HR={hr:.3f} [{ci[0]:.3f},{ci[1]:.3f}] p={float(rc.pvalues[0]):.3g}")
 log(f"SECONDARY locked cutoff: High={int(hi.sum())}/Low={int((1-hi).sum())} "
-    f"HR={float(np.exp(rb.params[0])):.3f}")
+    f"HR={bin_hr:.3f} [{bin_ci[0]:.3f},{bin_ci[1]:.3f}] p={bin_p:.3g}")
 out = {"n": int(len(m)), "deaths": int(E.sum()), "cont_HR": hr,
        "cont_CI": ci, "cont_p": float(rc.pvalues[0]),
-       "bin_HR": float(np.exp(rb.params[0])), "cutoff": cutoff,
+       "bin_HR": bin_hr, "bin_CI": bin_ci, "bin_p": bin_p, "cutoff": cutoff,
        "pam50": {}, "interaction": None}
 for st, s in m.groupby("CLAUDIN_SUBTYPE"):
     try:

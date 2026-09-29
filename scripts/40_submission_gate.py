@@ -285,14 +285,25 @@ check("raw-score Cox coefficients rendered in the final PDF",
 # the defect the external review raised for the Word tables.  Column widths and cell
 # padding are the usual cause, and nothing else in the build notices.  So the
 # rendered deliverables are searched for whole tokens.
+table4_path = ROOT / "tables/Tab4_incremental_value.tsv"
+table4_lines = table4_path.read_text().splitlines() if table4_path.exists() else []
+metabric_increment = next((line for line in table4_lines
+                           if line.startswith("METABRIC ΔC (+risk over clinical covariates)\t")), "")
+check("Table 4 source includes METABRIC clinical increment",
+      bool(metabric_increment)
+      and "+0.003" in metabric_increment
+      and "[-0.0001,+0.0092]" in metabric_increment
+      and "LRT p=0.041" in metabric_increment,
+      metabric_increment or "missing")
 LEGIBILITY = {
-    "Table 1 headers": ["n_tumors", "n_normals", "OS_events", "Median time (y)", "Platform", "PMID"],
-    "Table 1 cells": ["23740839", "21501481", "27006338", "32913985"],
-    "Table 3 headers": ["deaths", "Raw-score β", "High/Low", "Binary HR"],
+    "Table 1 headers": ["n_tumors", "n_normals", "OS_events", "Median time (y)", "Platform", "Source ref."],
+    "Table 1 cells": ["[8]", "[9]", "[10]", "[11]"],
+    "Table 3 headers": ["deaths", "Raw-score β", "High/Low", "Binary HR (95% CI), p"],
     "Table 3 cells": ["1909/71", "156/3117", "48/279", "0.595", "0.573", "0.229"],
     "Table 3 adjusted column": [f"{aps[c]['per_SD_HR']:.2f} [{aps[c]['per_SD_CI'][0]:.2f},"
                                 f"{aps[c]['per_SD_CI'][1]:.2f}]"
                                 for c in ("GSE20685", "SCANB", "METABRIC")],
+    "Table 4 METABRIC increment": ["+0.003", "0.663", "0.666", "0.041"],
 }
 for label, tokens in LEGIBILITY.items():
     for f in ("manuscript_final.pdf", "manuscript_review.pdf", "manuscript_bcrt.doc"):

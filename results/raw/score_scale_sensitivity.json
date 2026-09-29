@@ -1,0 +1,152 @@
+{
+  "analysis": "post hoc, outcome-blind scoring-scale sensitivity",
+  "transformations": {
+    "frozen_reference": "recorded derivation-cohort gene means/SDs, fixed coefficients",
+    "cohort_gene_z": "within-cohort gene-wise mean/SD, fixed coefficients",
+    "cohort_inverse_normal_rank": "within-cohort inverse-normal gene ranks, fixed coefficients"
+  },
+  "interpretation": "The latter two transformations use the full validation-cohort expression distribution and are retrospective sensitivities, not single-sample deployment procedures.",
+  "cohorts": {
+    "GSE20685": {
+      "n": 327,
+      "events": 83,
+      "scores": {
+        "frozen_reference": {
+          "score_sd": 1.0035271153619245,
+          "HR_per_SD": 1.5941385657559397,
+          "CI95": [
+            1.2857646831425151,
+            1.9764719004563973
+          ],
+          "p": 2.1222572218340028e-05,
+          "C_index": 0.6562351147947032
+        },
+        "cohort_gene_z": {
+          "score_sd": 1.6198648124882282,
+          "HR_per_SD": 1.585605706217618,
+          "CI95": [
+            1.2808975326948642,
+            1.9627998270091074
+          ],
+          "p": 2.298792921401148e-05,
+          "C_index": 0.6563303801086025
+        },
+        "cohort_inverse_normal_rank": {
+          "score_sd": 1.6109934519804443,
+          "HR_per_SD": 1.5904843033764204,
+          "CI95": [
+            1.2797956470527232,
+            1.976597064626963
+          ],
+          "p": 2.8542364665919466e-05,
+          "C_index": 0.6544727064875678
+        }
+      },
+      "score_correlations_vs_frozen": {
+        "cohort_gene_z": 0.9921079295072368,
+        "cohort_inverse_normal_rank": 0.9867271890104056
+      },
+      "frozen_cutoff": {
+        "cutoff": -0.2880220748019792,
+        "high": 48,
+        "low": 279
+      }
+    },
+    "SCAN-B": {
+      "n": 3273,
+      "events": 336,
+      "scores": {
+        "frozen_reference": {
+          "score_sd": 1.2146938587130718,
+          "HR_per_SD": 1.4446976049785503,
+          "CI95": [
+            1.3116901419602285,
+            1.5911922359282653
+          ],
+          "p": 8.272558122848043e-14,
+          "C_index": 0.5949098872480838
+        },
+        "cohort_gene_z": {
+          "score_sd": 1.691193532042699,
+          "HR_per_SD": 1.443465066743089,
+          "CI95": [
+            1.3112184490064798,
+            1.5890497883753723
+          ],
+          "p": 7.053505679853574e-14,
+          "C_index": 0.5933272173063834
+        },
+        "cohort_inverse_normal_rank": {
+          "score_sd": 1.6903454248173546,
+          "HR_per_SD": 1.418803596117025,
+          "CI95": [
+            1.283472560194801,
+            1.568404114575753
+          ],
+          "p": 7.940253505381112e-12,
+          "C_index": 0.5875777573910212
+        }
+      },
+      "score_correlations_vs_frozen": {
+        "cohort_gene_z": 0.9872331455596854,
+        "cohort_inverse_normal_rank": 0.9751848765045067
+      },
+      "frozen_cutoff": {
+        "cutoff": -0.2880220748019792,
+        "high": 156,
+        "low": 3117
+      }
+    },
+    "METABRIC": {
+      "n": 1980,
+      "events": 1143,
+      "scores": {
+        "frozen_reference": {
+          "score_sd": 1.015132644016021,
+          "HR_per_SD": 1.1338723206526276,
+          "CI95": [
+            1.0698936785866826,
+            1.2016768257202206
+          ],
+          "p": 2.2360014551836633e-05,
+          "C_index": 0.5731071792864598
+        },
+        "cohort_gene_z": {
+          "score_sd": 1.581803561083298,
+          "HR_per_SD": 1.1464268870808803,
+          "CI95": [
+            1.0819237784626141,
+            1.2147756002641297
+          ],
+          "p": 3.744890478889033e-06,
+          "C_index": 0.5746653797798653
+        },
+        "cohort_inverse_normal_rank": {
+          "score_sd": 1.5695882400685301,
+          "HR_per_SD": 1.149017440457534,
+          "CI95": [
+            1.0839195379913258,
+            1.218024984513332
+          ],
+          "p": 3.040456791405126e-06,
+          "C_index": 0.5738788665907582
+        }
+      },
+      "score_correlations_vs_frozen": {
+        "cohort_gene_z": 0.9934928842689866,
+        "cohort_inverse_normal_rank": 0.9864640730929951
+      },
+      "frozen_cutoff": {
+        "cutoff": -0.2880220748019792,
+        "high": 1909,
+        "low": 71,
+        "HR": 0.9958067042832286,
+        "CI95": [
+          0.7341270154132025,
+          1.3507621589668475
+        ],
+        "p": 0.9784476471349244
+      }
+    }
+  }
+}

@@ -3,7 +3,7 @@
 Generates (byte-identical contract — script exits nonzero on any mismatch):
   tables/Tab1_cohorts_v3.tsv  from QC_summary.json + rnaseq risk TSV (SCAN-B median)
   tables/Tab3_performance_v3.tsv from train/validation/rnaseq/corrective summaries
-  tables/Tab4_incremental_value.tsv from clinical_value/pam50/kao JSONs
+  tables/Tab4_incremental_value.tsv from clinical_value/metabric/pam50/kao JSONs
 PMIDs/platforms/notes are labeled constants (PMIDs verified from GEO series headers).
 """
 import json, hashlib, datetime
@@ -150,6 +150,7 @@ check("TabS1_derivation_and_units.tsv", tabs1)
 
 # --- Tab4 ---
 cv = json.load(open(RAW + "clinical_value.json"))
+mb = json.load(open(RAW + "metabric_adjusted.json"))
 pm = json.load(open(RAW + "pam50_incremental.json"))
 ka = json.load(open(RAW + "kao_incremental.json"))
 t4 = "\t".join(["Analysis", "Delta_C", "95CI", "Base_to_Full"]) + "\n"
@@ -157,6 +158,14 @@ t4 += "\t".join(["GSE20685 ΔC (+risk over age+T+N)", f"{cv['GSE20685_dC']['delt
 t4 += "\t".join(["SCANB ΔC (+risk over age+ER+HER2)", f"{cv['SCANB_dC']['delta']:.3f}", f"[{cv['SCANB_dC']['CI'][0]:.3f}, {cv['SCANB_dC']['CI'][1]:.3f}]", f"{cv['SCANB_dC']['base_C']:.3f}→{cv['SCANB_dC']['full_C']:.3f}"]) + "\n"
 t4 += "\t".join(["SCANB ΔC (+risk over PAM50 subtypes)", f"{pm['delta']:.3f}", f"[{pm['CI'][0]:.3f},{pm['CI'][1]:.3f}]", f"{pm['base_C']:.3f}→{pm['full_C']:.3f}; LRT p={pm['LRT_p']:.3f}"]) + "\n"
 t4 += "\t".join(["GSE20685 ΔC (+risk over Kao I-VI subtypes)", f"{ka['delta']:.3f}", f"[{ka['CI'][0]:.3f},{ka['CI'][1]:.3f}]", f"{ka['base_C']:.3f}→{ka['full_C']:.3f}; LRT p={ka['LRT_p']:.3f}; boundary (CI incl. 0)"]) + "\n"
+inc = mb["complete_case_incremental"]
+t4 += "\t".join([
+    "METABRIC ΔC (+risk over clinical covariates)",
+    f"{inc['delta_C']:+.3f}",
+    f"[{inc['delta_C_CI95_boot500'][0]:+.4f},{inc['delta_C_CI95_boot500'][1]:+.4f}]",
+    f"{inc['C_clinical_only']:.3f}→{inc['C_clinical_plus_risk']:.3f}; "
+    f"complete-case n={mb['complete_case']['n']:,}, "
+    f"{mb['complete_case']['deaths']:,} deaths; LRT p={inc['LRT_p']:.3f}"]) + "\n"
 check("Tab4_incremental_value.tsv", t4)
 
 sha = hashlib.sha256(open(__file__, "rb").read()).hexdigest()[:12]

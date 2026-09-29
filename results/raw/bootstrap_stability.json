@@ -1,0 +1,101 @@
+{
+  "B_requested": 500,
+  "B_used": 500,
+  "alpha_mode": "locked",
+  "locked_alpha": 0.029763514416313176,
+  "skipped": {
+    "few_events": 0,
+    "small_screen": 0,
+    "fit_failed": 0,
+    "timeout": 0
+  },
+  "resample_guard_s": 45,
+  "budget_s": 5400,
+  "median_nsel": 19.0,
+  "genes": {
+    "FBP1": {
+      "freq": 0.514,
+      "n_selected": 257,
+      "coef_median": -0.2971,
+      "sign_consistent": true
+    },
+    "GRK6": {
+      "freq": 0.34,
+      "n_selected": 170,
+      "coef_median": 0.2774,
+      "sign_consistent": false
+    },
+    "IKBKB": {
+      "freq": 0.202,
+      "n_selected": 101,
+      "coef_median": -0.2407,
+      "sign_consistent": false
+    },
+    "RAP1B": {
+      "freq": 0.312,
+      "n_selected": 156,
+      "coef_median": -0.375,
+      "sign_consistent": false
+    },
+    "TNFRSF19": {
+      "freq": 0.422,
+      "n_selected": 211,
+      "coef_median": -0.3495,
+      "sign_consistent": false
+    },
+    "ALDH2": {
+      "freq": 0.656,
+      "n_selected": 328,
+      "coef_median": -0.3526,
+      "sign_consistent": false
+    },
+    "CXCL14": {
+      "freq": 0.356,
+      "n_selected": 178,
+      "coef_median": -0.2291,
+      "sign_consistent": true
+    },
+    "DLG1": {
+      "freq": 0.372,
+      "n_selected": 186,
+      "coef_median": -0.3132,
+      "sign_consistent": true
+    },
+    "IDNK": {
+      "freq": 0.258,
+      "n_selected": 129,
+      "coef_median": -0.3016,
+      "sign_consistent": false
+    },
+    "TNFRSF12A": {
+      "freq": 0.218,
+      "n_selected": 109,
+      "coef_median": 0.2799,
+      "sign_consistent": false
+    },
+    "PRPS2": {
+      "freq": 0.388,
+      "n_selected": 194,
+      "coef_median": -0.3833,
+      "sign_consistent": true
+    },
+    "TKT": {
+      "freq": 0.422,
+      "n_selected": 211,
+      "coef_median": 0.3524,
+      "sign_consistent": true
+    },
+    "UQCRHL": {
+      "freq": 0.308,
+      "n_selected": 154,
+      "coef_median": 0.4371,
+      "sign_consistent": false
+    },
+    "PLCG1": {
+      "freq": 0.362,
+      "n_selected": 181,
+      "coef_median": 0.3452,
+      "sign_consistent": true
+    }
+  }
+}
