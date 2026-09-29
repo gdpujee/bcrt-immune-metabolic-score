@@ -78,8 +78,8 @@ rows.append(("C-index (95% CI)", "0.656 [0.60,0.71]",
              f"{rna['C']:.3f} {ci(rna['C_CI'], 2)}",
              "0.573 [0.554,0.594]",
              "corrective_summary, rnaseq_summary, metabric_summary"))
-rows.append(("Calibration slope", f"{g06['calib_slope']:.2f}", f"{scn['calib_slope']:.2f}",
-             f"{mtb['calib_slope']:.2f}", "adjusted_per_sd"))
+rows.append(("Raw-score Cox coefficient β", f"{g06['raw_score_coefficient']:.2f}", f"{scn['raw_score_coefficient']:.2f}",
+             f"{mtb['raw_score_coefficient']:.2f}", "adjusted_per_sd"))
 rows.append(("Locked-cutoff High/Low", "48 / 279", "156 / 3,117", "1,909 / 71",
              "cutoff_splits"))
 rows.append(("Binary HR (95% CI)",
@@ -212,12 +212,12 @@ CHECKS = [
     ("GSE20685 late CI lower bound (raw 0.8448)", "resp", "1.22** [0.84–1.75"),
     ("METABRIC adjusted cox.zph score p", "ms", "1.084×10⁻¹⁸"),
     ("METABRIC adjusted cox.zph score p", "sup", "1.084e-18"),
-    ("METABRIC adjusted cox.zph global p", "sup", "5.645e-31"),
+    ("METABRIC adjusted cox.zph global p", "sup", "5.65e-31"),
     ("METABRIC adjusted cox.zph", "resp", "5.645\\times10^{-31}"),
     ("abstract cohort-specific early effects", "ms",
-     "stronger early effects in GSE20685 and METABRIC"),
+     "the estimated association was below 1 after the 5-year split"),
     ("conclusion cohort-specific time dependence", "ms",
-     "time-dependent in GSE20685 and METABRIC (not SCAN-B)"),
+     "average estimates do not imply a persistent adverse association in METABRIC"),
     ("early-hazard citation", "ms", "recurrence hazard during the early years after breast cancer diagnosis [20]"),
     ("late-recurrence citation", "ms", "beyond 5 years, particularly in estrogen-receptor-positive disease [21]"),
     ("coding-correction superseded n (S4)", "sup", str(madj["coding_correction"]["superseded_complete_case"]["n"])),

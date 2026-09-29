@@ -714,7 +714,7 @@ def build_s6():
         L.append(f"| {label} | {nrow[0]} | {nrow[1]} | "
                  f"{u[0]:.2f} [{u[1]:.2f},{u[2]:.2f}] | "
                  f"{a['per_SD_HR']:.2f} [{a['per_SD_CI'][0]:.2f},{a['per_SD_CI'][1]:.2f}] | "
-                 f"{a['calib_slope']:.2f} | {spl[skey]['text']} "
+                 f"{a['raw_score_coefficient']:.2f} | {spl[skey]['text']} "
                  f"({spl[skey]['high_pct']}% above) | {spl[skey]['sd']:.4f} |")
     L.append("")
     L.append(f"The locked cutoff is {spl['locked_cutoff']:.6f}; it was derived on the "

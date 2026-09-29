@@ -17,7 +17,7 @@ submission_bcrt/REMARK_checklist.md into one standalone PDF with:
   * the completed 20-item REMARK checklist as the final section.
 
 Byte-reproducibility: reportlab stamps the wall-clock time into the document
-metadata, so SOURCE_DATE_EPOCH is pinned before any canvas exists (same technique
+metadata, so SOURCE_DATE_EPOCH is pinned to the 2026-09-29 release date before any canvas exists (same technique
 as scripts/25_build_final_pdf.py).  The build asserts that the four supplementary
 figures are present and that the header block is complete, because a supplement
 that silently loses its figures or its authorship line is exactly the defect this
@@ -41,7 +41,7 @@ from reportlab.platypus import (HRFlowable, Image, KeepTogether,
                                 Paragraph, SimpleDocTemplate, Spacer, Table,
                                 TableStyle)
 
-os.environ.setdefault("SOURCE_DATE_EPOCH", "1700000000")
+os.environ.setdefault("SOURCE_DATE_EPOCH", "1790640000")
 
 ROOT = Path(__file__).resolve().parents[1]
 SUB = ROOT / "submission_bcrt"

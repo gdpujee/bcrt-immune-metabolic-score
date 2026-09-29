@@ -9,7 +9,7 @@
 | Adjusted HR per SD, primary model (95% CI) | 1.60 [1.28,1.99] | 1.46 [1.33,1.61] | 1.08 [1.004,1.168] | `adjusted_per_sd, metabric_adjusted` |
 | Missing data: primary / sensitivity | median-imputed n=327; complete case n=325, 83 deaths, HR 1.60 | median-imputed n=3,273; complete case n=2,963, 286 deaths, HR 1.41 | complete case n=1,815, 1,041 deaths; imputation sensitivity n=1,980, HR 1.08 | `adjusted_per_sd, missingdata_sensitivity, metabric_adjusted` |
 | C-index (95% CI) | 0.656 [0.60,0.71] | 0.595 [0.56,0.63] | 0.573 [0.554,0.594] | `corrective_summary, rnaseq_summary, metabric_summary` |
-| Calibration slope | 0.46 | 0.30 | 0.12 | `adjusted_per_sd` |
+| Raw-score Cox coefficient β | 0.46 | 0.30 | 0.12 | `adjusted_per_sd` |
 | Locked-cutoff High/Low | 48 / 279 | 156 / 3,117 | 1,909 / 71 | `cutoff_splits` |
 | Binary HR (95% CI) | 1.95 [1.16,3.29] | 3.12 [2.25,4.32] | 1.00 | `corrective_summary, rnaseq_summary, metabric_summary` |
 | cox.zph (Grambsch-Therneau) p, score | 0.0078 | 0.229 | 4.6e-20 | `ph_diagnostics_exact` |

@@ -26,9 +26,9 @@ from reportlab.pdfbase.ttfonts import TTFont
 # Reproducibility: reportlab stamps /CreationDate with the wall-clock time, so two
 # identical builds of the same Markdown produced different bytes (verified: two
 # consecutive runs gave 167228ac… then 05e55a98…). reportlab honours
-# SOURCE_DATE_EPOCH for the embedded date, so pin it before any canvas is created.
+# SOURCE_DATE_EPOCH for the embedded date, so pin it to the 2026-09-29 release date before any canvas is created.
 # The document renders no date, so nothing visible changes.
-os.environ.setdefault("SOURCE_DATE_EPOCH", "1700000000")
+os.environ.setdefault("SOURCE_DATE_EPOCH", "1790640000")
 
 ROOT = Path(__file__).resolve().parents[1]
 MS = ROOT / "submission_bcrt" / "manuscript_submission.md"

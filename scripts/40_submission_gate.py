@@ -275,7 +275,7 @@ for cohort, tag in COHORT_IN_TABLE.items():
     check(f"Table 3 adjusted HR cell for {cohort} equals adjusted_per_sd.json",
           want in cell, f"cell={cell!r} json={adj}")
 
-score_coefficients = {c: f"{aps[c]['calib_slope']:.2f}" for c in COHORT_IN_TABLE}
+score_coefficients = {c: f"{aps[c]['raw_score_coefficient']:.2f}" for c in COHORT_IN_TABLE}
 check("raw-score Cox coefficients rendered in the final PDF",
       all(s in pdf_flat for s in score_coefficients.values()), str(score_coefficients))
 

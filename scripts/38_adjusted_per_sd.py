@@ -167,15 +167,15 @@ mt = pd.to_numeric(mc.OS_MONTHS, errors="coerce") / 12
 me = mc.OS_STATUS.astype(str).str.contains("DECEASED", na=False).astype(int)
 keep = mt.notna() & (mt > 0)
 rs = PHReg(mt[keep].values, mc.risk.values[keep].reshape(-1, 1), me[keep].values).fit(disp=0)
-out["METABRIC"]["calib_slope"] = round(float(rs.params[0]), 4)
-out["METABRIC"]["calib_slope_SE"] = round(float(rs.bse[0]), 4)
+out["METABRIC"]["raw_score_coefficient"] = round(float(rs.params[0]), 4)
+out["METABRIC"]["raw_score_coefficient_SE"] = round(float(rs.bse[0]), 4)
 log(f"METABRIC raw-score Cox coefficient (not an absolute-risk calibration): "
-    f"{out['METABRIC']['calib_slope']:.4f} SE {out['METABRIC']['calib_slope_SE']:.4f}")
-out["GSE20685"]["calib_slope"] = 0.4647
-out["GSE20685"]["calib_slope_SE"] = 0.1093
-out["SCANB"]["calib_slope"] = 0.3029
-out["SCANB"]["calib_slope_SE"] = 0.0406
-out["calib_slope_source"] = ("Univariable Cox coefficient of the raw locked score in each "
+    f"{out['METABRIC']['raw_score_coefficient']:.4f} SE {out['METABRIC']['raw_score_coefficient_SE']:.4f}")
+out["GSE20685"]["raw_score_coefficient"] = 0.4647
+out["GSE20685"]["raw_score_coefficient_SE"] = 0.1093
+out["SCANB"]["raw_score_coefficient"] = 0.3029
+out["SCANB"]["raw_score_coefficient_SE"] = 0.0406
+out["raw_score_coefficient_source"] = ("Univariable Cox coefficient of the raw locked score in each "
                              "validation cohort; a score-scale diagnostic, not a calibration "
                              "of absolute survival probabilities. GSE20685 and SCAN-B values "
                              "come from the corresponding cohort analyses; METABRIC is "

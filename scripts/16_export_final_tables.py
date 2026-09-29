@@ -96,7 +96,7 @@ r1 = "\t".join([
            corr["valid_continuous_perSD_HR"][1:3]),
     fmt_hr(aps["GSE20685"]["per_SD_HR"], aps["GSE20685"]["per_SD_CI"]),
     f"{valid['C']:.3f} [{corr['C_CI'][0]:.2f},{corr['C_CI'][1]:.2f}]",
-    f"{aps['GSE20685']['calib_slope']:.2f}",
+    f"{aps['GSE20685']['raw_score_coefficient']:.2f}",
     splits["GSE20685"]["text"], fmt_hr(corr["valid_binary_HR_CI"][0], corr["valid_binary_HR_CI"][1:3]),
     f"{phex['GSE20685_cont']['vars']['risk']['p']:.4f}",
     "adjusted for age+T+N; PH departure, average-effect interpretation"]) + "\n"
@@ -106,7 +106,7 @@ r2 = "\t".join([
     fmt_hr(rna["hr_cont"][0], rna["hr_cont"][1:3]),
     fmt_hr(aps["SCANB"]["per_SD_HR"], aps["SCANB"]["per_SD_CI"]),
     f"{rna['C']:.3f} [{rna['C_CI'][0]:.2f},{rna['C_CI'][1]:.2f}]",
-    f"{aps['SCANB']['calib_slope']:.2f}",
+    f"{aps['SCANB']['raw_score_coefficient']:.2f}",
     splits["SCANB"]["text"], fmt_hr(rna["hr_bin"][0], rna["hr_bin"][1:3]),
     f"{phex['SCANB_cont']['vars']['risk']['p']:.3f}",
     "adjusted for age+ER+HER2; PH not rejected; cutoff severely imbalanced"]) + "\n"
@@ -116,7 +116,7 @@ r3 = "\t".join([
     fmt_hr(met["cont_HR"], met["cont_CI"]),
     fmt_hr(cc["HR"], cc["CI"]),
     f"{met['C']:.3f} [{met['C_CI'][0]:.3f},{met['C_CI'][1]:.3f}]",
-    f"{aps['METABRIC']['calib_slope']:.2f}",
+    f"{aps['METABRIC']['raw_score_coefficient']:.2f}",
     splits["METABRIC"]["text"],
     f"{fmt_hr(met['bin_HR'], met['bin_CI'])}, p={met['bin_p']:.3f}",
     f"{phex['METABRIC_cont']['vars']['risk']['p']:.1e}",

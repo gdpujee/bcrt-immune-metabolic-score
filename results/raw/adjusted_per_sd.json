@@ -16,8 +16,8 @@
     ],
     "per_SD_p": 3.3228074498058256e-05,
     "covariates": "age_at_diagnosis + t_stage + n_stage (median-imputed)",
-    "calib_slope": 0.4647,
-    "calib_slope_SE": 0.1093
+    "raw_score_coefficient": 0.4647,
+    "raw_score_coefficient_SE": 0.1093
   },
   "SCANB": {
     "n": 3273,
@@ -37,8 +37,8 @@
     "per_SD_p": 3.0391178192844545e-14,
     "covariates": "age_at_diagnosis + er_status + her2_status (median-imputed)",
     "imputation": "cohort-median on all four columns, as in scripts/11_rnaseq_validate.py",
-    "calib_slope": 0.3029,
-    "calib_slope_SE": 0.0406
+    "raw_score_coefficient": 0.3029,
+    "raw_score_coefficient_SE": 0.0406
   },
   "METABRIC": {
     "n": 1815,
@@ -60,9 +60,9 @@
       1.1618
     ],
     "covariates": "age + positive nodes + grade + ER + HER2 + tumor size (T category; complete case)",
-    "calib_slope": 0.1238,
-    "calib_slope_SE": 0.0292
+    "raw_score_coefficient": 0.1238,
+    "raw_score_coefficient_SE": 0.0292
   },
   "note": "All adjusted hazard ratios are expressed per one SD of the locked linear predictor within each cohort (the primary analysis unit), so the adjusted and unadjusted columns of the transportability table are directly comparable. Per-1-score-unit values are retained in the supplementary table. The score itself is never refit.",
-  "calib_slope_source": "Univariable Cox coefficient of the raw locked score in each validation cohort; a score-scale diagnostic, not a calibration of absolute survival probabilities. GSE20685 and SCAN-B values come from the corresponding cohort analyses; METABRIC is computed here."
+  "raw_score_coefficient_source": "Univariable Cox coefficient of the raw locked score in each validation cohort; a score-scale diagnostic, not a calibration of absolute survival probabilities. GSE20685 and SCAN-B values come from the corresponding cohort analyses; METABRIC is computed here."
 }

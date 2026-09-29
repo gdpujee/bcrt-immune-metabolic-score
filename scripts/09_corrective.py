@@ -60,9 +60,9 @@ log(f"C 95%CI bootstrap: [{ci(Cb)[0]:.3f},{ci(Cb)[1]:.3f}] (point {cindex(T,E,ri
 log(f"AUC1y 95%CI: [{ci(A1)[0]:.3f},{ci(A1)[1]:.3f}]")
 log(f"AUC3y 95%CI: [{ci(A3)[0]:.3f},{ci(A3)[1]:.3f}]")
 log(f"AUC5y 95%CI: [{ci(A5)[0]:.3f},{ci(A5)[1]:.3f}]")
-# calibration: slope (validation Cox with risk fixed? slope = coef of risk when refit) + 5y observed vs predicted by quartile
+# Raw locked-score Cox coefficient and descriptive 5y KM by score quartile.
 res_slope=PHReg(T,risk.reshape(-1,1),E).fit(disp=0)
-log(f"Calibration slope (validation refit coef, 1.0=perfect): {float(res_slope.params[0]):.3f} SE {float(res_slope.bse[0]):.3f}")
+log(f"Raw-score Cox coefficient (validation cohort): {float(res_slope.params[0]):.3f} SE {float(res_slope.bse[0]):.3f}")
 # 5y KM observed by risk quartile
 vr["q"]=pd.qcut(vr.risk,4,labels=["Q1","Q2","Q3","Q4"])
 for q in ["Q1","Q2","Q3","Q4"]:
@@ -151,7 +151,7 @@ with open(RES/"corrective_summary.json","w") as f:
     json.dump({"valid_continuous_perSD_HR":[hr_c,lo_c,hi_c,float(res_c.pvalues[0])],
      "valid_binary_HR_CI":[hr_b,lo_b,hi_b,float(res_b.pvalues[0])],
      "C_CI":list(ci(Cb)),"AUC1_CI":list(ci(A1)),"AUC3_CI":list(ci(A3)),"AUC5_CI":list(ci(A5)),
-     "calib_slope":[float(res_slope.params[0]),float(res_slope.bse[0])],
+     "raw_score_coefficient":[float(res_slope.params[0]),float(res_slope.bse[0])],
      "trunc5y_HR":[float(np.exp(res5.params[0])),float(res5.pvalues[0])],
      "valid_median_exploratory":[med,float(np.exp(res2.params[0])),float(res2.pvalues[0]),float(p2)]},f,indent=2)
 log("WROTE corrective_summary.json, checkpoint_BH, immune_compare_excl_risk")

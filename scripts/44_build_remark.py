@@ -170,8 +170,8 @@ ROWS = [
      f"C-index {valid['C']:.3f} [{corr['C_CI'][0]:.2f},{corr['C_CI'][1]:.2f}], "
      f"{rna['C']:.3f} [{rna['C_CI'][0]:.2f},{rna['C_CI'][1]:.2f}], "
      f"{met['C']:.3f} [{met['C_CI'][0]:.3f},{met['C_CI'][1]:.3f}]; raw-score Cox coefficient "
-     f"{aps['GSE20685']['calib_slope']:.2f}, {aps['SCANB']['calib_slope']:.2f}, "
-     f"{aps['METABRIC']['calib_slope']:.2f} (per raw score unit; score-scale diagnostics, "
+     f"{aps['GSE20685']['raw_score_coefficient']:.2f}, {aps['SCANB']['raw_score_coefficient']:.2f}, "
+     f"{aps['METABRIC']['raw_score_coefficient']:.2f} (per raw score unit; score-scale diagnostics, "
      "not absolute-risk calibration). Decile calibration is not claimed for the locked score; Fig. S3 carries the Schoenfeld diagnostics "
      "and Fig. S4 the HR(t) curve."),
     ("Subgroup analyses prespec status", "Results; Discussion",

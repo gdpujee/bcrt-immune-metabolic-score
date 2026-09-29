@@ -106,9 +106,9 @@ for b in range(B):
 def ci(a):
     a=np.array(a); a=a[~np.isnan(a)]; return [float(np.percentile(a,2.5)),float(np.percentile(a,97.5))]
 log(f"C 95% [{ci(Cb)[0]:.3f},{ci(Cb)[1]:.3f}]; AUC3y [{ci(A3)[0]:.3f},{ci(A3)[1]:.3f}]; AUC5y [{ci(A5)[0]:.3f},{ci(A5)[1]:.3f}]")
-# calibration slope + quartiles
+# Raw locked-score Cox coefficient and descriptive score quartiles
 rs=PHReg(T,risk.reshape(-1,1),E).fit(disp=0)
-log(f"Calib slope {float(rs.params[0]):.3f} SE {float(rs.bse[0]):.3f}")
+log(f"Raw-score Cox coefficient {float(rs.params[0]):.3f} SE {float(rs.bse[0]):.3f}")
 cu["q"]=pd.qcut(cu.risk,4,labels=["Q1","Q2","Q3","Q4"])
 for q in ["Q1","Q2","Q3","Q4"]:
     s=cu[cu.q==q]; tt=s.OS_years.values; ee=s.OS_event.values.astype(int); order=np.argsort(tt); tt=tt[order]; ee=ee[order]
