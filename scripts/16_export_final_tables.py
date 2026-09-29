@@ -62,13 +62,13 @@ qc = json.load(open(RAW + "QC_summary.json"))
 # --- Tab1 ---
 rr = pd.read_csv(RAW + "rnaseq_risk_GSE96058.tsv", sep="\t")
 scanb_med = f"{float(rr.OS_years.median()):.2f}"
-tab1 = "\t".join(["Cohort", "n_tumors", "n_normals", "OS_events", "Median time (y)", "Platform", "PMID", "Note"]) + "\n"
-tab1 += "\t".join(["GSE42568 train", "104", "17", "35", f"{qc['GSE42568']['median_OS_years']:.1f}", "GPL570", "23740839", "discovery"]) + "\n"
-tab1 += "\t".join(["GSE20685 supportive evaluation", "327", "0", "83", f"{qc['GSE20685']['median_OS_years']:.1f}", "GPL570", "21501481", "same-platform; lock/evaluation order not established"]) + "\n"
-tab1 += "\t".join(["GSE45827 biology", "130", "11", "0", "NA", "GPL570", "27006338", "no survival; 14 cell lines excluded"]) + "\n"
-tab1 += "\t".join(["GSE96058 SCAN-B RNA-seq validation", "3273", "0", "336", scanb_med, "HiSeq2000/NextSeq500", "32913985", "136 repl excluded; PAM50 available"]) + "\n"
+tab1 = "\t".join(["Cohort", "n_tumors", "n_normals", "OS_events", "Median time (y)", "Platform", "Source ref.", "Note"]) + "\n"
+tab1 += "\t".join(["GSE42568 train", "104", "17", "35", f"{qc['GSE42568']['median_OS_years']:.1f}", "GPL570", "[8]", "discovery"]) + "\n"
+tab1 += "\t".join(["GSE20685 supportive evaluation", "327", "0", "83", f"{qc['GSE20685']['median_OS_years']:.1f}", "GPL570", "[9]", "same-platform; lock/evaluation order not established"]) + "\n"
+tab1 += "\t".join(["GSE45827 biology", "130", "11", "0", "NA", "GPL570", "[10]", "no survival; 14 cell lines excluded"]) + "\n"
+tab1 += "\t".join(["GSE96058 SCAN-B RNA-seq validation", "3273", "0", "336", scanb_med, "RNA-seq", "[11]", "136 repl excluded; PAM50 available"]) + "\n"
 met = json.load(open(RAW + "metabric_summary.json"))
-tab1 += "\t".join(["METABRIC Illumina validation", "1980", "0", "1143", "9.7", "Illumina HT-12 v3", "N/A (cBioPortal brca_metabric)", "528/2509 no OS data + 1 no mRNA excluded; CLAUDIN_SUBTYPE PAM50 available"]) + "\n"
+tab1 += "\t".join(["METABRIC Illumina validation", "1980", "0", "1143", "9.7", "Illumina HT-12 v3", "[12–14]", "528/2509 no OS data + 1 no mRNA excluded; CLAUDIN_SUBTYPE PAM50 available"]) + "\n"
 check("Tab1_cohorts_v3.tsv", tab1)
 
 # --- Tab3: cross-platform transportability summary (one row per locked validation) ---
@@ -88,7 +88,7 @@ def fmt_hr(pair, ci):
 
 h = "\t".join(["Cohort", "n", "deaths", "HR per SD (95% CI)",
                "adj HR per SD (95% CI)", "C-index (95% CI)", "Raw-score β",
-               "High/Low", "Binary HR", "PH p", "Note"]) + "\n"
+               "High/Low", "Binary HR (95% CI), p", "PH p", "Note"]) + "\n"
 r1 = "\t".join([
     "GSE20685 (GPL570 microarray, same platform)",
     "327", "83",
@@ -117,7 +117,8 @@ r3 = "\t".join([
     fmt_hr(cc["HR"], cc["CI"]),
     f"{met['C']:.3f} [{met['C_CI'][0]:.3f},{met['C_CI'][1]:.3f}]",
     f"{aps['METABRIC']['calib_slope']:.2f}",
-    splits["METABRIC"]["text"], f"{met['bin_HR']:.2f}",
+    splits["METABRIC"]["text"],
+    f"{fmt_hr(met['bin_HR'], met['bin_CI'])}, p={met['bin_p']:.3f}",
     f"{phex['METABRIC_cont']['vars']['risk']['p']:.1e}",
     "adjusted for age+nodes+grade+ER+HER2+size (complete case); strong PH departure, "
     "association concentrated early; cutoff non-transportable"]) + "\n"

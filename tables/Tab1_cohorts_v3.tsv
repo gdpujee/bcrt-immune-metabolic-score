@@ -1,6 +1,6 @@
-Cohort	n_tumors	n_normals	OS_events	Median time (y)	Platform	PMID	Note
-GSE42568 train	104	17	35	6.0	GPL570	23740839	discovery
-GSE20685 supportive evaluation	327	0	83	8.1	GPL570	21501481	same-platform; lock/evaluation order not established
-GSE45827 biology	130	11	0	NA	GPL570	27006338	no survival; 14 cell lines excluded
-GSE96058 SCAN-B RNA-seq validation	3273	0	336	4.35	HiSeq2000/NextSeq500	32913985	136 repl excluded; PAM50 available
-METABRIC Illumina validation	1980	0	1143	9.7	Illumina HT-12 v3	N/A (cBioPortal brca_metabric)	528/2509 no OS data + 1 no mRNA excluded; CLAUDIN_SUBTYPE PAM50 available
+Cohort	n_tumors	n_normals	OS_events	Median time (y)	Platform	Source ref.	Note
+GSE42568 train	104	17	35	6.0	GPL570	[8]	discovery
+GSE20685 supportive evaluation	327	0	83	8.1	GPL570	[9]	same-platform; lock/evaluation order not established
+GSE45827 biology	130	11	0	NA	GPL570	[10]	no survival; 14 cell lines excluded
+GSE96058 SCAN-B RNA-seq validation	3273	0	336	4.35	RNA-seq	[11]	136 repl excluded; PAM50 available
+METABRIC Illumina validation	1980	0	1143	9.7	Illumina HT-12 v3	[12–14]	528/2509 no OS data + 1 no mRNA excluded; CLAUDIN_SUBTYPE PAM50 available
