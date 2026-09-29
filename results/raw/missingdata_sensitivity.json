@@ -1,5 +1,5 @@
 {
-  "method": "statsmodels PHReg, per-SD locked risk, prespecified adjusted covariate sets fitted on complete cases only (sensitivity; the primary models are median-imputed full-cohort fits)",
+  "method": "statsmodels PHReg, per-SD locked risk, reported adjusted covariate sets fitted on complete cases only (sensitivity; selection timing not established; the primary models are median-imputed full-cohort fits)",
   "GSE20685": {
     "n": 325,
     "deaths": 83,

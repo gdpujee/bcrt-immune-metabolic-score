@@ -43,7 +43,7 @@ meds206 = np.nanmedian(e206[valid.GSM.tolist()].values, axis=0)
 
 fig, ax = plt.subplots(1, 2, figsize=(10, 4))
 ax[0].hist(train["OS_years"], bins=20, alpha=0.7, label="GSE42568 (derivation, n=104)")
-ax[0].hist(valid["OS_years"], bins=20, alpha=0.5, label="GSE20685 (validation, n=327)")
+ax[0].hist(valid["OS_years"], bins=20, alpha=0.5, label="GSE20685 (supportive evaluation, n=327)")
 ax[0].set_xlabel("OS years"); ax[0].set_ylabel("n"); ax[0].legend(fontsize=8)
 ax[0].set_title("Overall-survival follow-up (years)", fontsize=9)
 ax[1].hist(meds425, bins=20, alpha=0.7, label="GSE42568")

@@ -62,11 +62,11 @@ qc = json.load(open(RAW + "QC_summary.json"))
 # --- Tab1 ---
 rr = pd.read_csv(RAW + "rnaseq_risk_GSE96058.tsv", sep="\t")
 scanb_med = f"{float(rr.OS_years.median()):.2f}"
-tab1 = "\t".join(["Cohort", "n_tumors", "n_normals", "OS_events", "Median_OS", "Platform", "PMID", "Note"]) + "\n"
+tab1 = "\t".join(["Cohort", "n_tumors", "n_normals", "OS_events", "Median time (y)", "Platform", "PMID", "Note"]) + "\n"
 tab1 += "\t".join(["GSE42568 train", "104", "17", "35", f"{qc['GSE42568']['median_OS_years']:.1f}", "GPL570", "23740839", "discovery"]) + "\n"
-tab1 += "\t".join(["GSE20685 validation", "327", "0", "83", f"{qc['GSE20685']['median_OS_years']:.1f}", "GPL570", "21501481", "locked same-platform"]) + "\n"
+tab1 += "\t".join(["GSE20685 supportive evaluation", "327", "0", "83", f"{qc['GSE20685']['median_OS_years']:.1f}", "GPL570", "21501481", "same-platform; lock/evaluation order not established"]) + "\n"
 tab1 += "\t".join(["GSE45827 biology", "130", "11", "0", "NA", "GPL570", "27006338", "no survival; 14 cell lines excluded"]) + "\n"
-tab1 += "\t".join(["GSE96058 SCAN-B RNA-seq validation", "3273", "0", "336", scanb_med, "HiSeq2000/NextSeq500", "32913985", "136 repl excluded; PAM50 available; median = overall OS in 3273 analysis cohort"]) + "\n"
+tab1 += "\t".join(["GSE96058 SCAN-B RNA-seq validation", "3273", "0", "336", scanb_med, "HiSeq2000/NextSeq500", "32913985", "136 repl excluded; PAM50 available"]) + "\n"
 met = json.load(open(RAW + "metabric_summary.json"))
 tab1 += "\t".join(["METABRIC Illumina validation", "1980", "0", "1143", "9.7", "Illumina HT-12 v3", "N/A (cBioPortal brca_metabric)", "528/2509 no OS data + 1 no mRNA excluded; CLAUDIN_SUBTYPE PAM50 available"]) + "\n"
 check("Tab1_cohorts_v3.tsv", tab1)
@@ -87,7 +87,7 @@ def fmt_hr(pair, ci):
 
 
 h = "\t".join(["Cohort", "n", "deaths", "HR per SD (95% CI)",
-               "adj HR per SD (95% CI)", "C-index (95% CI)", "Slope",
+               "adj HR per SD (95% CI)", "C-index (95% CI)", "Raw-score β",
                "High/Low", "Binary HR", "PH p", "Note"]) + "\n"
 r1 = "\t".join([
     "GSE20685 (GPL570 microarray, same platform)",
@@ -127,9 +127,9 @@ check("Tab3_performance_v3.tsv", h + r1 + r2 + r3)
 tabs1 = "\t".join(["Analysis", "n", "deaths", "Estimate", "Note"]) + "\n"
 tabs1 += "\t".join([
     "Training GSE42568 (derivation, non-inferential)", "104", "35",
-    f"binary HR {train['HR_high_low']:.2f}; C {train['C']:.2f} (bootstrap {train['C_boot']:.2f})",
-    "the derivation cohort constructed the frozen score; its estimates are optimistic "
-    "and are not used as evidence of prognostic performance"]) + "\n"
+    f"binary HR {train['HR_high_low']:.2f}; apparent C {train['C']:.2f}",
+    "the derivation cohort constructed the frozen score; apparent estimates are "
+    "non-inferential, and no valid full-pipeline optimism-corrected C-index was estimated"]) + "\n"
 tabs1 += "\t".join([
     "GSE20685 adjusted, per 1 score unit", f"{aps['GSE20685']['n']}",
     f"{aps['GSE20685']['deaths']}",
@@ -143,7 +143,7 @@ tabs1 += "\t".join([
     "METABRIC adjusted, per SD (complete case)", f"{madj['complete_case']['n']}",
     f"{madj['complete_case']['deaths']}",
     fmt_hr(cc["HR"], cc["CI"]),
-    "the prespecified METABRIC model enters the score as its per-SD linear predictor, "
+    "the METABRIC model enters the score as its per-SD linear predictor, "
     "so the per-SD scale is native here; complete-case primary, imputation sensitivity "
     "in the supplement"]) + "\n"
 check("TabS1_derivation_and_units.tsv", tabs1)

@@ -1,5 +1,5 @@
 {
-  "method": "survival::cox.zph (rank transform, Breslow ties) on the prespecified complete-case adjusted model",
+  "method": "survival::cox.zph (rank transform, Breslow ties) on the documented complete-case adjusted model; covariate-set selection timing not established",
   "survival_version": "3.8.6",
   "unit": "risk_sd = per SD of the locked linear predictor, within-cohort SD",
   "n": 1815,

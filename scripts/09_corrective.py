@@ -41,7 +41,9 @@ hi=(vr.group=="High").astype(int).values
 res_b=PHReg(T,hi,E).fit(disp=0)
 hr_b=float(np.exp(res_b.params[0])); lo_b=float(np.exp(res_b.params[0]-1.96*res_b.bse[0])); hi_b=float(np.exp(res_b.params[0]+1.96*res_b.bse[0]))
 log(f"VALID binary High-vs-Low: HR={hr_b:.2f} 95%CI [{lo_b:.2f},{hi_b:.2f}] p={float(res_b.pvalues[0]):.3g}")
-# bootstrap CIs for C and AUCs (1000 resamples, seed 42)
+# Bootstrap CIs for Harrell's C and the descriptive known-status cumulative/
+# dynamic AUCs below (not IPCW-corrected; censored before/at t are excluded).
+# 1000 resamples, seed 42.
 B=1000; Cb=[]; A1=[];A3=[];A5=[]
 n=len(T)
 for b in range(B):

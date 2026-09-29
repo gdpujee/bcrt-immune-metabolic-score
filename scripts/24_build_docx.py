@@ -1,7 +1,7 @@
 """Build the BCRT Word manuscript (WORDSRC-001).
 
 python-docx: headings, paragraphs with **bold** runs, bullets, 4 tables from
- tables/*.tsv, 14 embedded PNGs at their legends. Review/submission rendering
+ tables/*.tsv, 12 main-figure PNGs at their legends. Review/submission rendering
 only; no scientific content is created or altered here. A temporary DOCX is
 converted to the journal's requested legacy .doc format with LibreOffice; the
 DOC is round-tripped to DOCX to verify that tables and figures survived.
@@ -102,7 +102,9 @@ def style_table(tb, ncols):
                     r.font.size = Pt(8)
 
 
-for ln in MS.read_text().split("\n"):
+lines = [ln for ln in MS.read_text().split("\n")
+         if not re.match(r"^- \*\*Fig\. S\d+\*\*", ln)]
+for ln in lines:
     ln = ln.rstrip()
     if ln.startswith("# "):
         doc.add_heading(ln[2:], level=0)
@@ -212,7 +214,7 @@ def normalize_zip(path, stamp=(1980, 1, 1, 0, 0, 0)):
     tmp.replace(path)
 
 
-n_legends = sum(1 for l in MS.read_text().split("\n") if l.startswith("- **Fig"))
+n_legends = sum(1 for l in lines if l.startswith("- **Fig"))
 if nfig != n_legends:
     raise SystemExit(f"{nfig} image(s) embedded for {n_legends} figure legend(s)")
 

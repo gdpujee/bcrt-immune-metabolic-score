@@ -53,7 +53,7 @@ out["GSE20685"] = {"n_total": int(len(c206)), "n_valid_OS": int(len(valid)),
   "n_OS_events": int((valid["OS_event"]==1).sum()), "n_OS_censored": int((valid["OS_event"]==0).sum()),
   "median_OS_years": float(valid["OS_years"].median()), "median_followup_censored": float(valid.loc[valid.OS_event==0,"OS_years"].median()),
   "n_metastasis_events": int((valid["MET_event"]==1).sum())}
-report += [f"## GSE20685 (validation): n_total={len(c206)}, valid OS={len(valid)} (deaths={(valid.OS_event==1).sum()}, censored={(valid.OS_event==0).sum()})",
+report += [f"## GSE20685 (supportive same-platform evaluation): n_total={len(c206)}, valid OS={len(valid)} (deaths={(valid.OS_event==1).sum()}, censored={(valid.OS_event==0).sum()})",
  f"- OS years median {out['GSE20685']['median_OS_years']:.2f}; censored median {out['GSE20685']['median_followup_censored']:.2f}",
  f"- Metastasis events {(valid.MET_event==1).sum()}; Expression {e206.shape[0]} genes x {e206.shape[1]} samples"]
 c206.to_csv(META/"GSE20685_clinical_curated.tsv", sep="\t", index=False)
@@ -76,7 +76,7 @@ c458.to_csv(META/"GSE45827_clinical_curated.tsv", sep="\t", index=False)
 report += ["", "## Endpoint harmonization",
  "- Primary OS: 42568 death/censor + days/365.25; 20685 event_death + follow_up_duration_years. Both all-cause OS from diagnosis/sample; units years for KM/Cox.",
  "- Secondary (separate, never pooled): 42568 RFS, 20685 metastasis. Definitions differ -> reported separately.",
- "- Inclusion frozen: 42568 train = 104 tumors w/ OS; 20685 validation = 327 w/ OS; 45827 biology = 141 (130+11) excl. 14 cell lines."]
+ "- Inclusion frozen: 42568 derivation = 104 tumors w/ OS; 20685 supportive same-platform evaluation = 327 w/ OS; 45827 biology = 141 (130+11) excl. 14 cell lines."]
 
 with open(RES/"QC_summary.json","w") as f: json.dump(out, f, indent=2)
 with open(RES/"QC_report.md","w") as f: f.write("\n".join(report)+"\n")

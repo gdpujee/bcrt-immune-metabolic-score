@@ -54,24 +54,35 @@ for st, s in sorted(m.groupby("CLAUDIN_SUBTYPE")):
         B.append((f"{st} (n={len(s)})", hr, ci[0], ci[1]))
     except Exception as e:
         log(f"panel B skip {st}: {e}")
-fig, ax = plt.subplots(1, 2, figsize=(11, 4.2), gridspec_kw={"width_ratios": [1, 1.2]})
-for a, rows, ttl in zip(ax, [A, B],
-                         ["A. Primary per-SD HR (locked validations)",
-                          "B. METABRIC CLAUDIN_SUBTYPE strata (exploratory)"]):
+fig, ax = plt.subplots(1, 2, figsize=(11, 4.5),
+                       gridspec_kw={"width_ratios": [1, 1.25]})
+for panel, rows, title in zip(
+        ax, [A, B],
+        ["A. Continuous association", "B. METABRIC subtype strata (exploratory)"]):
     ys = np.arange(len(rows))[::-1]
-    for y, (nm, hr, lo, hi) in zip(ys, rows):
-        a.plot(hr, y, "s", color="black")
-        if lo is not None:
-            a.hlines(y, lo, hi, color="black")
-        a.text(max(hr, 1.0) * 1.12 if lo is None else hi * 1.03, y,
-               f"{nm} {hr:.2f}" + (f" [{lo:.2f},{hi:.2f}]" if lo else ""),
-               va="center", fontsize=8)
-    a.axvline(1, ls="--", color="grey", lw=1)
-    a.set_yticks([])
-    a.set_xlabel("HR per SD")
-    a.set_title(ttl, fontsize=9)
-    a.set_xscale("log")
-plt.tight_layout()
+    for y, (_, hr, lo, hi) in zip(ys, rows):
+        panel.hlines(y, lo, hi, color="black", lw=1.2)
+        panel.plot(hr, y, "s", color="black", markersize=4.5, zorder=3)
+    panel.axvline(1, ls="--", color="grey", lw=1)
+    panel.set_yticks(ys, [row[0] for row in rows], fontsize=7.5)
+    panel.set_xlabel("HR per cohort SD", fontsize=8)
+    panel.set_title(title, fontsize=9)
+    panel.grid(axis="x", linestyle=":", alpha=0.5)
+    panel.spines["top"].set_visible(False)
+    panel.spines["right"].set_visible(False)
+
+# Explicit numeric ticks avoid the crowded 10^0 / 1.2×10^0 labels produced by
+# automatic log formatting in the narrow two-panel journal figure.
+ax[0].set_xscale("log")
+ax[0].set_xlim(0.95, 2.15)
+ax[0].set_xticks([1.0, 1.25, 1.5, 1.75, 2.0],
+                 labels=["1.0", "1.25", "1.5", "1.75", "2.0"])
+ax[0].minorticks_off()
+ax[1].set_xscale("log")
+ax[1].set_xlim(0.48, 5.4)
+ax[1].set_xticks([0.5, 1.0, 2.0, 5.0], labels=["0.5", "1", "2", "5"])
+ax[1].minorticks_off()
+fig.subplots_adjust(left=0.15, right=0.985, top=0.82, bottom=0.17, wspace=0.48)
 plt.savefig(FIG / "Fig12_crosscohort_forest.png", dpi=150)
 plt.savefig(FIG / "Fig12_crosscohort_forest.pdf")
 log(f"METAFOR-001: panels {len(A)}/{len(B)}; interaction p={met['interaction']['p_nominal']:.3f}")

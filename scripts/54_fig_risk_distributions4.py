@@ -47,7 +47,7 @@ vr = pd.read_csv(RES / "validation_risk_GSE20685.tsv", sep="\t").risk.values
 sc = pd.read_csv(RES / "rnaseq_risk_GSE96058.tsv", sep="\t").risk.values
 mt = pd.read_csv(RES / "metabric_risk.tsv", sep="\t").risk.values
 
-panels = [("GSE42568 (derivation)", train_risk), ("GSE20685 (validation)", vr),
+panels = [("GSE42568 (derivation)", train_risk), ("GSE20685 (supportive evaluation)", vr),
           ("SCAN-B (RNA-seq)", sc), ("METABRIC (Illumina)", mt)]
 fig, ax = plt.subplots(1, 4, figsize=(15, 3.4))
 for a, (nm, v) in zip(ax, panels):

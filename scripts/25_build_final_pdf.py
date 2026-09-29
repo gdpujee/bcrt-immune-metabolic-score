@@ -175,7 +175,7 @@ def make_table_flowables(tbl_id, tsv_file):
     flowables = []
 
     if tbl_id == "Table 1":
-        col_widths = [30 * mm, 14 * mm, 15 * mm, 15 * mm, 15 * mm, 24 * mm, 13 * mm, 44 * mm]
+        col_widths = [30 * mm, 14 * mm, 15 * mm, 15 * mm, 20 * mm, 22 * mm, 13 * mm, 41 * mm]
         hdr = [Paragraph(f"<b>{rich(c)}</b>", tbl_hdr) for c in d.columns]
         rows = []
         for r in d.values:
@@ -232,7 +232,9 @@ def make_table_flowables(tbl_id, tsv_file):
         else:
             d_disp = d
 
-        col_widths = [28 * mm, 10 * mm, 11 * mm, 21 * mm, 23 * mm, 21 * mm, 9 * mm, 14 * mm, 17 * mm, 15 * mm]
+        # Give the raw-score coefficient a usable label width. The old 9 mm
+        # column split "Raw-score Cox coef." inside words in the rendered PDF.
+        col_widths = [24 * mm, 9 * mm, 11 * mm, 20 * mm, 22 * mm, 20 * mm, 18 * mm, 14 * mm, 16 * mm, 15 * mm]
         hdr = [Paragraph(f"<b>{rich(c)}</b>", tbl_hdr) for c in d_disp.columns]
         rows = []
         for r in d_disp.values:
@@ -284,7 +286,8 @@ def make_table_flowables(tbl_id, tsv_file):
 
 
 story = []
-lines = MS.read_text().split("\n")
+lines = [ln for ln in MS.read_text().split("\n")
+         if not re.match(r"^- \*\*Fig\. S\d+\*\*", ln)]
 secnum, nfig, ntbl = 0, 0, 0
 table_heading = None
 NUMERED = {"Introduction", "Methods", "Results", "Discussion", "Conclusion"}
@@ -340,6 +343,12 @@ while i < len(lines):
             j += 1
         i = j - 1
     elif ln.startswith("## Figure legends"):
+        # A blank Markdown line before this explicit page break becomes a tiny
+        # Spacer flowable. If it cannot fit at the foot of the preceding page,
+        # ReportLab can put it alone on a new page and then honor PageBreak(),
+        # leaving a visually empty sheet before the legends.
+        while story and isinstance(story[-1], Spacer):
+            story.pop()
         story.append(PageBreak())
         story.append(Paragraph("Figure legends", h1))
         j = i + 1
@@ -367,6 +376,8 @@ while i < len(lines):
             j += 1
         i = j - 1
     elif ln.startswith("## Tables"):
+        while story and isinstance(story[-1], Spacer):
+            story.pop()
         story.append(PageBreak())
         table_heading = Paragraph("Tables", h1)
         j = i + 1
@@ -414,7 +425,7 @@ doc = SimpleDocTemplate(str(OUT), pagesize=A4, topMargin=25 * mm,
                         bottomMargin=20 * mm, leftMargin=20 * mm,
                         rightMargin=20 * mm, title=article_title,
                         author="Danhua He, Qiang Li")
-n_legends = sum(1 for l in MS.read_text().split("\n") if l.startswith("- **Fig"))
+n_legends = sum(1 for l in lines if l.startswith("- **Fig"))
 if nfig != n_legends:
     raise SystemExit(f"{nfig} image(s) embedded for {n_legends} figure legend(s)")
 doc.build(story, onFirstPage=header_footer, onLaterPages=header_footer)

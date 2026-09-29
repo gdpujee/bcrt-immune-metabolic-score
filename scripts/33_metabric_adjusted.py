@@ -4,8 +4,8 @@ Addresses the external review item "P1: METABRIC clinical-adjusted Cox is the
 most obvious scientific gap": the manuscript previously reported adjusted models
 only for GSE20685 (age+T+N) and SCAN-B (age+ER+HER2).
 
-PRESPECIFIED COVARIATE SET (fixed in DECISIONS.md D-038 BEFORE this script was
-run; no outcome-driven variable selection):
+ADJUSTED COVARIATE SET used in this analysis. The materials included in the
+third-party review package do not establish when the variables were selected:
     age            AGE_AT_DIAGNOSIS               (continuous, years)
     nodal_burden   LYMPH_NODES_EXAMINED_POSITIVE  (continuous, positive nodes)
     grade          GRADE                          (ordinal 1/2/3)
@@ -151,7 +151,7 @@ m["OS_years"] = pd.to_numeric(m.OS_MONTHS, errors="coerce") / 12
 m["OS_event"] = m.OS_STATUS.str.contains("DECEASED", na=False).astype(int)
 m = m.dropna(subset=["OS_years", "OS_event", "risk"]).copy()
 
-# prespecified coding
+# covariate coding
 m["age"] = pd.to_numeric(m.AGE_AT_DIAGNOSIS, errors="coerce")
 m["nodal_burden"] = pd.to_numeric(m.LYMPH_NODES_EXAMINED_POSITIVE, errors="coerce")
 m["grade"] = pd.to_numeric(m.GRADE, errors="coerce")
@@ -219,7 +219,7 @@ def ll(df, cols):
     return PHReg(df.OS_years.values, X, df.OS_event.values.astype(int)).fit(disp=0).llf
 
 
-out = {"prespecified_covariates": COVS, "missingness": miss,
+out = {"model_covariates": COVS, "missingness": miss,
        "coding": {"er": "Positive=1, Negative=0", "her2": "Positive=1, Negative=0",
                   "grade": "ordinal 1/2/3 numeric",
                   "tumor_size": "T category from recorded size in mm: <=20 -> 1, "
@@ -238,15 +238,15 @@ out = {"prespecified_covariates": COVS, "missingness": miss,
                                         "tumor_size_HR": 1.213,
                                         "tumor_size_CI": [1.130, 1.302],
                                         "tumor_size_p": 9.34e-08},
-           "note": "disclosed rather than silently overwritten; the covariate set itself "
-                   "is unchanged and was fixed in DECISIONS.md D-038 before execution"}}
+           "note": "disclosed rather than silently overwritten; the covariate list "
+                   "is unchanged between the superseded and corrected fits"}}
 log("tumor_size T-category distribution: "
     f"{m.tumor_size.value_counts(dropna=False).sort_index().to_dict()}")
 
-# PRIMARY: complete-case with the full prespecified set
+# PRIMARY: complete-case with the full adjusted set
 cc = m.dropna(subset=["risk_sd"] + COVS).copy()
 out["complete_case"] = fit(cc, ["risk_sd"] + COVS, "PRIMARY complete-case full set")
-# reduced prespecified sensitivity: core clinical (age, grade, er, her2)
+# reduced-covariate sensitivity: core clinical (age, grade, er, her2)
 red = m.dropna(subset=["risk_sd", "age", "grade", "er", "her2"]).copy()
 out["reduced_core"] = fit(red, ["risk_sd", "age", "grade", "er", "her2"],
                           "SENS complete-case core set")

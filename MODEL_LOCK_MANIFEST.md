@@ -3,7 +3,7 @@
 **Document Version:** 1.0  
 **Repository:** `gdpujee/bcrt-immune-metabolic-score`  
 **Purpose:** Audit trail documenting the frozen model specification, safeguards against post-hoc tuning, and the authors' chronology of external validation.
-**Associated manuscript:** *Cross-platform transportability of a locked immune–metabolic transcriptional score for breast cancer overall survival*.
+**Associated manuscript:** *What transfers and what does not: cross-platform evaluation of a fixed immune–metabolic transcriptional score for breast cancer overall survival*.
 
 ---
 
@@ -13,8 +13,9 @@
 - **Derivation Cohort:** GEO GSE42568 (Affymetrix HG-U133_Plus_2 GPL570; $n=104$ breast tumors, 35 deaths; 17 adjacent normal controls)
 - **Candidate Pool Construction:** 
   - Differential expression: Mann–Whitney U test, Benjamini–Hochberg FDR $< 0.05$, relaxed $|\log_2\text{FC}| > 0.5$ (3,763 genes at strict $|\log_2\text{FC}| > 1$)
-  - Pathway intersection: 11 pre-specified KEGG metabolic and immune pathways $\to$ 297 candidate genes
-  - Univariable Cox pre-filter: $p < 0.01 \to 41$ genes
+  - Pathway intersection: 11 KEGG metabolic and immune pathway sets used in the implemented candidate-pool procedure $\to$ 297 candidate genes
+  - Provenance: the frozen plan does not list the pathway identities or record the relaxed $|\log_2\mathrm{FC}| > 0.5$ threshold; neither is claimed as prespecified.
+- Univariable Cox pre-filter: $p < 0.01 \to 41$ genes
 - **Feature Selection:** LASSO-penalized Cox regression with 5-fold cross-validation ($\alpha = 0.02976$) yielding 14 genes.
 - **Multivariable Refitting:** Coefficients refit via unpenalized multivariable Cox regression in derivation cohort and strictly locked.
 
@@ -65,13 +66,21 @@ where $X_i$ is the $\log_2$ gene expression level, $\mu_i$ is the derivation-coh
 
 ---
 
-## 4. Sequential Validation Timeline & Git Audit Trail
+## 4. Model Lock and Subsequent Fixed-Parameter Application Timeline
 
 | Milestone | Git Commit Hash | Timestamp (UTC+8) | Description & Scope |
 | :--- | :--- | :--- | :--- |
-| **Model Lock** | `1b4c2c0` | 2026-09-20 01:07:21 | Model parameters, standardization parameters, and cutoff frozen. Initial validation on same-platform GSE20685 ($n=327$). |
+| **Model Lock / GSE20685 analysis** | `1b4c2c0` | 2026-09-20 01:07:21 | Model parameters, standardization parameters, cutoff freeze, and initial supportive same-platform GSE20685 analysis are recorded in this commit; within-commit order is unresolved. |
 | **SCAN-B RNA-seq Validation** | `88972bc` | 2026-09-20 06:38:50 | Applied locked model without re-training to SCAN-B GSE96058 ($n=3,273$). Identified PAM50 heterogeneity. |
 | **METABRIC Extension** | `d50651b` | 2026-09-26 07:31:10 | Applied locked model without re-training to METABRIC ($n=1,980$). Tested replication using the available CLAUDIN_SUBTYPE annotation. |
+
+The Model Lock and initial GSE20685 analysis are recorded in the same commit
+(`1b4c2c0`). The available commit-level record cannot establish their order
+within that commit; therefore it does not independently verify that the lock
+preceded the GSE20685 analysis. This chronology limitation is distinct from the
+later SCAN-B and METABRIC applications, recorded in subsequent commits, which
+used the locked parameters without refitting. No validation-driven tuning is
+documented, but the same-commit record alone cannot prove the exact sequence.
 
 **Public verifiability status (updated 2026-09-27).** The three hashes above
 come from the development repository's full history (347 commits) and are kept
@@ -91,6 +100,6 @@ authors' local history.
 
 ## 5. Anti-Leakage & Governance Declaration
 
-1. **No Post-Hoc Tuning:** No features were added or deleted, no coefficients refit, and no cutoffs readjusted in any validation cohort.
+1. **No documented tuning in later cohorts:** Subsequent SCAN-B and METABRIC analyses applied the recorded parameters without refitting or cutoff adjustment. The same-commit GSE20685 record does not establish whether the model was frozen before that evaluation.
 2. **Outcome-Blind Scoring:** Standardized score calculations in validation cohorts used only gene expression data and were executed blinded to clinical follow-up and survival endpoints.
 3. **Full Disclosure of Limitations:** Failures of absolute cutoff transport (SCAN-B 4.77% high; METABRIC 96.41% high) and non-reproduction of the exploratory SCAN-B five-class PAM50 pattern in the broader METABRIC CLAUDIN_SUBTYPE analysis ($p=0.42$) are transparently reported without selective omission.

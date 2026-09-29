@@ -1,12 +1,4 @@
 {
-  "prespecified_covariates": [
-    "age",
-    "nodal_burden",
-    "grade",
-    "er",
-    "her2",
-    "tumor_size"
-  ],
   "missingness": {
     "age": {
       "missing": 0,
@@ -66,7 +58,7 @@
       ],
       "tumor_size_p": 9.34e-08
     },
-    "note": "disclosed rather than silently overwritten; the covariate set itself is unchanged and was fixed in DECISIONS.md D-038 before execution"
+    "note": "disclosed rather than silently overwritten; the covariate list is unchanged between the superseded and corrected fits"
   },
   "complete_case": {
     "n": 1815,
@@ -263,5 +255,13 @@
         "p": 6.6680109062664075e-09
       }
     }
-  }
+  },
+  "model_covariates": [
+    "age",
+    "nodal_burden",
+    "grade",
+    "er",
+    "her2",
+    "tumor_size"
+  ]
 }

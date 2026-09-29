@@ -218,7 +218,7 @@ pairs.append((
     "covariate-adjusted Cox (GSE20685: age+T+N; SCAN-B: age+ER+HER2)",
     "covariate-adjusted Cox (GSE20685: age+T+N; SCAN-B: age+ER+HER2; METABRIC: "
     "age+positive lymph nodes+grade+ER+HER2+tumor-size category derived from recorded "
-    "millimetres, a set prespecified before execution and not selected on outcome)"))
+    "millimetres)"))
 
 pairs.append((
     "for SCAN-B, age had zero missing values, ER status was missing in 200 patients, "
@@ -253,7 +253,7 @@ elif not any(marker in _sub_now for marker in _metabric_adjustment_markers):
     pairs.append((
         "so PAM50 heterogeneity remains a SCAN-B-only exploratory finding.",
         "so PAM50 heterogeneity remains a SCAN-B-only exploratory finding. Clinical "
-        f"adjustment of METABRIC (age+positive nodes+grade+ER+HER2+tumor size, prespecified; "
+        f"adjustment of METABRIC (age+positive nodes+grade+ER+HER2+tumor size; "
         f"complete-case n={cc['n']}, {cc['deaths']} deaths) attenuated but did not remove the "
         f"association: adjusted HR {hr(ccr)} per SD. Discrimination barely moved "
         f"(clinical-only C {ci_inc['C_clinical_only']:.3f} to clinical+score C "
@@ -298,96 +298,25 @@ pairs.append((
     "discrimination once routine clinical variables are accounted for and no "
     "clinical-utility claim is made;"))
 
-# --- Discussion: derivation cohort is construction, not inference ---
-pairs.append((
-    "## Discussion\n",
-    "## Discussion\n"
-    "The derivation cohort served for construction of the frozen score rather than as "
-    "inferential evidence; prognostic inference rests on the external validations, and "
-    "the training estimates (HR 12.93, apparent C 0.86) are reported only to make the "
-    "construction explicit. "
-))
-
-# --- Discussion: cutoff/calibration explicitly secondary ---
-pairs.append((
-    "Cross-platform cutoff transport fails in absolute terms (156/3117 skew; slope 0.30):",
-    "The primary estimand is the continuous association; absolute threshold transport is "
-    "a secondary, transportability-focused analysis and fails in absolute terms "
-    f"({splits['SCANB']['text']} above/below in SCAN-B, "
-    f"{splits['METABRIC']['text']} in METABRIC, both far from a balanced split; "
-    "slope 0.30):"))
-
 # --- Abstract: the clinical-adjusted increment, so the abstract cannot imply utility ---
-_inc_lo, _inc_hi = ci_inc["delta_C_CI95_boot500"]
-_inc_note = ("interval includes zero" if _inc_lo <= 0 <= _inc_hi
-             else f"95% CI {_inc_lo:+.3f} to {_inc_hi:+.3f}")
-pairs.append((
-    "with significant associations observed in Basal-like (HR 1.40 [95% CI 1.10–1.77], "
-    "p=0.005) and HER2-enriched (HR 1.45 [1.11–1.91], p=0.007) tumors, but no significant "
-    "association detected in Luminal A (HR 0.99 [0.83–1.19], p=0.95) or Luminal B "
-    "(HR 0.95 [0.76–1.18], p=0.62) tumors (73% of the cohort; no equivalence claimed).",
-    "with signals in Basal-like (HR 1.40 [1.10–1.77], p=0.005) and HER2-enriched "
-    "(HR 1.45 [1.11–1.91], p=0.007) tumors and none detected in Luminal A or Luminal B "
-    "(73% of the cohort; no equivalence claimed)."))
-
-pairs.append((
-    "HRs average over follow-up with stronger early effects), exploratory "
-    "ΔC +0.028/+0.024.",
-    "HRs average over follow-up with stronger early effects). Exploratory increments were "
-    f"+0.028/+0.024; in clinically adjusted METABRIC the score added ΔC "
-    f"{ci_inc['delta_C']:+.3f} ({_inc_note})."))
-
-# --- Abstract: conclusion re-framed around transportability, then corrected ---
-# Round-2 (external review P0-2) corrections to the round-1 sentence:
-#   * "without improving on routine clinical variables" claimed an absence the
-#     analysis did not establish — the added discrimination was small, and the
-#     bootstrap interval on the METABRIC increment includes zero.  "was modest"
-#     is what was measured.
-#   * "three cohorts and two platforms" was wrong on the platform count:
-#     Affymetrix (GSE20685), Illumina (METABRIC) and RNA-seq (SCAN-B) are three
-#     platforms in two assay classes.  The sentence now names the classes rather
-#     than asserting a count.
-pairs.append((
-    "**Conclusion.** The locked score's continuous prognostic association reproduced "
-    "across three cohorts and two platforms but was time-dependent, without improving "
-    "on routine clinical variables; its absolute cutoff did not transport, and PAM50 "
-    "heterogeneity seen in SCAN-B did not replicate in METABRIC. Prospective, "
-    "subtype-aware and platform-calibrated validation is required.",
-    "**Conclusion.** The locked score's continuous prognostic association reproduced "
-    "across three validation cohorts spanning microarray and RNA-seq, but effects were "
-    "time-dependent and incremental discrimination beyond routine clinical variables "
-    "was modest. Its absolute cutoff did not transport, and PAM50 heterogeneity "
-    "observed in SCAN-B did not replicate in METABRIC. Prospective, subtype-aware and "
-    "platform-calibrated validation is required."))
-
-# --- Figure legends: add Fig. S4 ---
-# The generator/source annotation that this pair used to append was removed in
-# round 2 (external review P0-6): provenance belongs in the repository and the
-# supplement, not in a legend a reader sees.  `old` is still the anchor the pair
-# was written against and is contained in `new`, so re-running classifies as
-# already-applied and does not re-inject.
-pairs.append((
-    "- **Fig. S3.**",
-    "- **Fig. S4.** Hazard ratio per SD of the locked score as a function of follow-up "
-    "time, from the formal time-varying-coefficient Cox model h(t|risk) = "
-    "h0(t)·exp(β1·risk + β2·risk·log t), with 95% confidence bands, for GSE20685, SCAN-B "
-    "and METABRIC.\n"
-    "- **Fig. S3.**"))
-
 # --- Table legends: Table 3 is now the transportability summary; Table S1 exists ---
 pairs.append((
     "- **Table 3.** Overall survival performance of the locked 14-gene score across "
     "cohorts (C-index, continuous per-SD HR, and binary HR with 95% confidence intervals "
     "and p-values).",
-    "- **Table 3.** Cross-platform transportability summary of the locked 14-gene score: "
-    "one row per locked validation cohort with n, deaths, unadjusted and clinically "
-    "adjusted hazard ratio per cohort SD, C-index, calibration slope, locked-cutoff "
-    "high/low split, binary hazard ratio, and the proportional-hazards test p-value for "
-    "the score. All hazard ratios are on the per-SD scale so that adjusted and unadjusted "
-    "estimates are directly comparable; per-1-score-unit estimates and the non-inferential "
-    "derivation-cohort row are in Table S1.\n"
+    "- **Table 3.** Evaluation summary of the recorded 14-gene score across GSE20685 "
+    "and the subsequent SCAN-B and METABRIC cohorts: one row per model-evaluation "
+    "cohort with n, deaths, unadjusted and clinically adjusted hazard ratio per cohort "
+    "SD, C-index, raw-score Cox coefficient, locked-cutoff high/low split, binary hazard ratio, "
+    "and the proportional-hazards test p-value for the score. All hazard ratios are on "
+    "the per-SD scale so that adjusted and unadjusted estimates are directly comparable; "
+    "per-1-score-unit estimates and the non-inferential derivation-cohort row are in "
+    "Table S1 of Online Resource 1. Primary adjusted models use median imputation for "
+    "GSE20685 (n=327) and SCAN-B (n=3,273), and complete-case analysis for METABRIC "
+    "(n=1,815; unrounded 95% CI [1.004, 1.168], p=0.040; full-cohort imputation "
+    "sensitivity n=1,980, HR 1.08 [1.01, 1.16]).\n"
     "- **Table S1.** Derivation-cohort estimates (non-inferential) and per-1-score-unit "
-    "adjusted estimates (Supplementary Material)."))
+    "adjusted estimates (Online Resource 1)."))
 
 apply_label = "submission"
 stage(sub, pairs, apply_label)
@@ -395,12 +324,9 @@ stage(sub, pairs, apply_label)
 # ------------------------------------------------------------------ author md
 auth = MS / "manuscript.md"
 pairs = [
-    ("covariate-adjusted Cox (SCAN-B: age+ER+HER2)",
-     "covariate-adjusted Cox (SCAN-B: age+ER+HER2; METABRIC: age+positive nodes+grade+"
-     "ER+HER2+tumor size, prespecified before execution)"),
     ("PAM50 interaction p=0.42 (SCAN-B heterogeneity not replicated).",
      "PAM50 interaction p=0.42 (SCAN-B heterogeneity not replicated). Clinical "
-     f"adjustment (prespecified six-covariate set; complete-case n={cc['n']}, "
+     f"adjustment (six-covariate set; complete-case n={cc['n']}, "
      f"{cc['deaths']} deaths; missingness {miss_txt()}) gave adjusted HR {hr(ccr)} per SD; "
      f"clinical-only C {ci_inc['C_clinical_only']:.3f} to clinical+score C "
      f"{ci_inc['C_clinical_plus_risk']:.3f} ({inc_txt(ci_inc)}, "
@@ -537,11 +463,14 @@ stage(dec, [("All pipeline scripts (01-31)", "All pipeline scripts (01-42)")],
 # the manuscript.  Anchors are per-sentence because `declarations.md` states
 # availability twice (data and code) with the same trailing phrase.
 REPO = "https://github.com/gdpujee/bcrt-immune-metabolic-score"
-# Version DOI pins the archived snapshot that matches this manuscript (Zenodo
-# record for tag v1.0.1); the concept DOI always resolves to the newest version.
-# The pre-resubmission concept/version pair (22961119/22961120) was deleted on
-# 2026-09-27 and must never come back — gate 40 asserts its absence.
-ARCHIVE = "https://doi.org/10.5281/zenodo.22995292"
+# Version DOI pins the archived snapshot that matches this manuscript. It is
+# minted by Zenodo after the GitHub release tag exists, then written to
+# CITATION.cff before the submission documents are rebuilt.
+_cff_text = (ROOT / "CITATION.cff").read_text()
+_version_doi = re.search(r'(?m)^doi:\s*"?(10\.5281/zenodo\.\d+)', _cff_text)
+if not _version_doi:
+    raise SystemExit("CITATION.cff has no minted version DOI; finalize the release first")
+ARCHIVE = f"https://doi.org/{_version_doi.group(1)}"
 CONCEPT = "https://doi.org/10.5281/zenodo.22994650"
 AVAIL_TAIL = f"publicly available at {REPO}."
 
@@ -627,7 +556,7 @@ def build_s3():
         raise SystemExit(f"Table S1 has {len(data)} data rows (expected 4)")
     L = ["**Table S1.** Derivation-cohort estimates (non-inferential) and "
          "per-1-score-unit adjusted estimates. Validation rows are on the "
-         "per-1-score-unit scale except METABRIC, whose prespecified model enters "
+         "per-1-score-unit scale except METABRIC, whose model enters "
          "the score as its per-SD linear predictor.", "",
          "| " + " | ".join(head) + " |",
          "|" + "---|" * len(head)]
@@ -658,16 +587,17 @@ def build_s6():
 
     L = []
     L.append("### S6.1 METABRIC clinical-adjusted Cox")
-    L.append("Covariate set prespecified before execution: age, positive-node count, "
-             "grade, ER status, HER2 status and tumor size (T category). The locked "
-             "score enters as the per-SD linear predictor and is never refit; no "
-             "variable was chosen after seeing an outcome.")
+    L.append("The METABRIC adjusted model included age, positive-node count, grade, ER "
+             "status, HER2 status and tumor-size category (T category). The locked "
+             "score enters as the per-SD linear predictor and is never refit. The "
+             "materials in this review package do not establish when the covariate "
+             "set was selected.")
     L.append("")
     L.append(f"- Complete-case model (PRIMARY), n={c['n']}, {c['deaths']} deaths: "
              f"adjusted HR per SD **{hrv(cr)}** (unrounded 95% CI "
              f"[{cr['CI'][0]:.3f}, {cr['CI'][1]:.3f}]; rounded to 2 decimal places as "
              f"[{cr['CI'][0]:.2f}, {cr['CI'][1]:.2f}] in Table 3).")
-    for term in madj["prespecified_covariates"]:
+    for term in madj["model_covariates"]:
         t = c["terms"][term]
         L.append(f"  - {term}: HR {t['HR']:.3f} [{t['CI'][0]:.3f},{t['CI'][1]:.3f}], "
                  f"p={t['p']:.3g}")
@@ -743,12 +673,12 @@ def build_s6():
              "by refitting the documented model and asserting that the published per-unit "
              "point estimate reproduces. Per-1-score-unit values are in Table S1. The "
              "n/deaths columns describe the full analysis cohort, which is what the "
-             "unadjusted HR, calibration slope and cutoff split are computed on; the "
-             "adjusted column alone uses the METABRIC prespecified complete case "
+             "unadjusted HR, raw-score Cox coefficient and cutoff split are computed on; "
+             "the adjusted column alone uses the METABRIC complete-case analysis "
              f"(n={aps['METABRIC']['n']}, {aps['METABRIC']['deaths']} deaths).")
     L.append("")
     L.append("| Cohort | n | deaths | HR per SD (unadjusted) | HR per SD (adjusted) | "
-             "Calibration slope | Above/below locked cutoff | Cohort SD |")
+             "Raw-score Cox coefficient | Above/below locked cutoff | Cohort SD |")
     L.append("|---|---|---|---|---|---|---|---|")
     unadj = {
         "GSE20685": corr_s["valid_continuous_perSD_HR"],

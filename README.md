@@ -1,29 +1,22 @@
 # Immune–metabolic transcriptional score in breast cancer: analysis code and derived data
 
-Analysis code and derived data tables accompanying the manuscript *Cross-platform transportability of a locked immune–metabolic transcriptional score for breast cancer overall survival*,
+Analysis code and derived data tables accompanying the manuscript *What transfers and what does not: cross-platform evaluation of a fixed immune–metabolic transcriptional score for breast cancer overall survival*,
 submitted to *Breast Cancer Research and Treatment*.
 
-**Archived release (version DOI): [10.5281/zenodo.22995292](https://doi.org/10.5281/zenodo.22995292)**
+**Archived software version:** v1.0.2. The version DOI is listed on its Zenodo record.
 *(Concept DOI for all versions: [10.5281/zenodo.22994650](https://doi.org/10.5281/zenodo.22994650))*
 
 ## What the analysis does
 
-A 14-gene immune–metabolic score was built in GSE42568 (104 tumours, 35 deaths) and
-then **locked**: genes, Cox coefficients, training means and SDs, and the median
-cutoff (−0.2880) were frozen before any validation. The locked score was applied
-**once**, with no retraining or recentering, to three independent validation cohorts
-spanning two assay classes:
+A 14-gene immune–metabolic score was built in GSE42568 (104 tumours, 35 deaths). The recorded score was evaluated in GSE20685, but the model-lock record and initial GSE20685 analysis share a commit, so their order cannot be established; we treat GSE20685 as supportive same-platform evidence. Subsequent commits document application of the fixed parameters without refitting or recentering to SCAN-B and METABRIC. The primary cross-platform evidence therefore comes from these two later evaluations; the absolute cutoff and calibration are reported as separate failure dimensions.
 
-| Cohort | Accession | Assay | Analysable | Deaths |
-|---|---|---|---|---|
-| GSE20685 | GEO | Affymetrix GPL570 | 327 tumours | 83 |
-| SCAN-B | GSE96058 | RNA-seq | 3,273 patients | 336 |
-| METABRIC | cBioPortal `brca_metabric` | Illumina HT-12 | 1,980 patients | 1,143 |
+| Cohort | Accession | Assay | Analysable | Deaths | Evidence role |
+|---|---|---|---|---|---|
+| GSE20685 | GEO | Affymetrix GPL570 | 327 tumours | 83 | Supportive same-platform evaluation; lock order unresolved |
+| SCAN-B | GSE96058 | RNA-seq | 3,273 patients | 336 | Subsequent fixed-parameter cross-platform validation |
+| METABRIC | cBioPortal `brca_metabric` | Illumina HT-12 | 1,980 patients | 1,143 | Subsequent fixed-parameter cross-platform validation |
 
-The primary estimand is the continuous per-SD association from Cox regression. The
-continuous association replicated in all three cohorts (per-SD HR 1.59 [95% CI
-1.29–1.98], 1.44 [1.31–1.59] and 1.13 [1.07–1.20]) while the absolute cutoff did not
-transport. The exploratory five-class PAM50 heterogeneity pattern seen in SCAN-B
+The primary estimand is the continuous per-SD association from Cox regression. Same-direction continuous associations were observed in GSE20685 and in the two later fixed-parameter applications (per-SD HR 1.59 [95% CI 1.29–1.98], 1.44 [1.31–1.59] and 1.13 [1.07–1.20]); the absolute cutoff did not transport. The exploratory five-class PAM50 heterogeneity pattern seen in SCAN-B
 was not reproduced in the broader METABRIC CLAUDIN_SUBTYPE analysis (global
 interaction p=0.42). Effects were time-dependent in the two
 microarray cohorts, so those estimates are averages over follow-up.
@@ -45,7 +38,7 @@ The primary expression and clinical data, and the probe-mapped expression matric
 derived from them. All of it is public and is downloaded from the accessions above by
 `scripts/02_parse_geo.py`, `scripts/10_parse_scanb.py` and the cBioPortal REST API; the
 matrices are left out because a single one exceeds GitHub's 100 MB per-file limit.
-The repository holds only what the analysis derives from them at a publishable size.
+The repository holds only what the analysis derives from them at a publishable size. A fresh end-to-end run therefore needs network access to retrieve source data; downstream stages can run offline after inputs have been downloaded and cached locally.
 
 The manuscript, the journal submission package, and the project's internal audit
 trail (review notes, decision log, evidence ledger) are not part of this release.
@@ -76,7 +69,7 @@ its contract. The stages are:
 | Parse and QC | `02`–`03` | Download and parse the GEO series; QC and endpoints |
 | Candidate pool | `04` | Differential expression, KEGG intersection → 297 candidates |
 | Training (non-inferential) | `05` | Univariable screen, LASSO-Cox, coefficient refit, cutoff lock |
-| Same-platform validation | `06`, `07`, `09` | GSE20685, robustness, corrective passes |
+| Same-platform cohort evaluation | `06`, `07`, `09` | GSE20685, robustness, corrective passes |
 | RNA-seq validation | `10`–`11`, `17` | SCAN-B parse and locked validation |
 | Cross-platform validation | `27`, `33`, `38`, `41`, `42` | METABRIC, clinically adjusted Cox, one per-SD scale, multiplicity, cutoff splits |
 | Proportional hazards | `28`, `32`, `35` | Residual screen, exact Grambsch–Therneau test, time-varying coefficient model |

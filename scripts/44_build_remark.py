@@ -85,7 +85,7 @@ ROWS = [
      "reproducibility gap, not a new signature."),
     ("Study objectives/hypotheses", "Introduction",
      "(i) does the locked score's continuous association replicate across platforms; "
-     "(ii) exploratory assessment of heterogeneity across PAM50 subtypes."),
+     "(ii) post hoc exploratory assessment of heterogeneity across PAM50 subtypes."),
     ("Study design (retrospective/prospective)", "Methods",
      "Five retrospective public datasets: four survival-analysis cohorts and one "
      "biology-only cohort (GSE45827); no new data generated; the derivation cohort "
@@ -99,7 +99,8 @@ ROWS = [
      "specimens, no new preservation protocol."),
     ("Assay methods, reproducibility", "Methods",
      "Affymetrix GPL570, Illumina HT-12 v3 and RNA-seq; max-mean probe-to-gene "
-     "mapping; genes, coefficients and preprocessing frozen before any validation."),
+     "mapping; parameter freeze and initial GSE20685 analysis are recorded in the same "
+     "commit, so their within-commit order cannot be established from the available history."),
     ("Outcome definitions, time origins", "Methods; Table 1",
      "Overall survival (all-cause); cohort-specific time origins and units; "
      "relapse/metastasis endpoints are secondary."),
@@ -119,7 +120,9 @@ ROWS = [
     ("Statistical methods, model building", "Methods",
      "Differential expression (BH-FDR) intersected with 11 KEGG sets to 297 "
      "candidates, univariable Cox screen, LASSO-Cox with 5-fold CV (alpha 0.0298) to "
-     f"{train['n_selected']} genes, refit and then locked before any validation."),
+     f"{train['n_selected']} genes and multivariable refit; the EPV>=10-or-reduce rule "
+     "was not followed (EPV=2.5), and the available commit record does not establish "
+     "whether locking preceded the initial GSE20685 analysis."),
     ("Marker distribution, cutoff prespec", "Methods; Fig. S2",
      f"Cutoff {spl['locked_cutoff']:.4f} fixed on the discovery cohort and applied "
      f"unchanged; above/below {spl['GSE20685']['text']}, {spl['SCANB']['text']}, "
@@ -131,7 +134,7 @@ ROWS = [
      f"{hr(met['cont_HR'], met['cont_CI'])}."),
     ("Multivariable analyses, covariates", "Results; Table 3",
      "GSE20685 age+T+N; SCAN-B age+ER+HER2; METABRIC age+positive nodes+grade+ER+HER2"
-     "+tumour size, a set prespecified before execution and not selected on outcome."),
+     "+tumour size. The materials in this review package do not establish when the METABRIC covariate set was selected."),
     ("Model assumptions checked", "Methods; Results; Figs. S3, S4",
      "Exact ranked-time Grambsch-Therneau tests for the score: p="
      f"{fmt_p(php('GSE20685_cont'))}, {fmt_p(php('SCANB_cont'))}, "
@@ -153,11 +156,12 @@ ROWS = [
      f"median/mode imputation (n={mi['n']}, adjusted HR per SD "
      f"{hr(mi['terms']['risk_sd']['HR'], mi['terms']['risk_sd']['CI'])})."),
     ("Validation (internal/external)", "Results; Table 3",
-     "Locked same-platform (GSE20685), cross-platform RNA-seq (SCAN-B) and "
-     "independent Illumina (METABRIC) validation; adjusted HR per SD "
+     "GSE20685 is a supportive same-platform evaluation; its same-commit record does "
+     "not establish whether model locking preceded analysis. Subsequent SCAN-B RNA-seq "
+     "and METABRIC Illumina validations are documented in later commits and used "
+     "fixed parameters without refitting; adjusted HR per SD "
      f"{aps['GSE20685']['per_SD_HR']:.2f}, {aps['SCANB']['per_SD_HR']:.2f}, "
-     f"{aps['METABRIC']['per_SD_HR']:.2f}; no re-fitting, re-centring or cutoff "
-     "tuning in any validation cohort."),
+     f"{aps['METABRIC']['per_SD_HR']:.2f}."),
     ("Estimates with uncertainty", "Tables 3 and 4",
      "All hazard ratios with 95% confidence intervals; C-index with bootstrap "
      "interval; incremental discrimination with bootstrap interval and a "
@@ -165,10 +169,10 @@ ROWS = [
     ("Calibration/discrimination", "Table 3",
      f"C-index {valid['C']:.3f} [{corr['C_CI'][0]:.2f},{corr['C_CI'][1]:.2f}], "
      f"{rna['C']:.3f} [{rna['C_CI'][0]:.2f},{rna['C_CI'][1]:.2f}], "
-     f"{met['C']:.3f} [{met['C_CI'][0]:.3f},{met['C_CI'][1]:.3f}]; calibration slope "
+     f"{met['C']:.3f} [{met['C_CI'][0]:.3f},{met['C_CI'][1]:.3f}]; raw-score Cox coefficient "
      f"{aps['GSE20685']['calib_slope']:.2f}, {aps['SCANB']['calib_slope']:.2f}, "
-     f"{aps['METABRIC']['calib_slope']:.2f} (1.0 = perfect). Decile calibration is "
-     "not claimed for the locked score; Fig. S3 carries the Schoenfeld diagnostics "
+     f"{aps['METABRIC']['calib_slope']:.2f} (per raw score unit; score-scale diagnostics, "
+     "not absolute-risk calibration). Decile calibration is not claimed for the locked score; Fig. S3 carries the Schoenfeld diagnostics "
      "and Fig. S4 the HR(t) curve."),
     ("Subgroup analyses prespec status", "Results; Discussion",
      "PAM50 subgroups are declared exploratory and post-hoc and are reported "

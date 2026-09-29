@@ -9,14 +9,15 @@ Checks
   2. the final PDF states the title exactly once and the keyword line exactly once
      (both needles are asserted non-empty first, so the check cannot pass vacuously)
   3. references_numbered.md is numbered 1..N
-  4. every reference 1..N is cited in both manuscript files, and no citation marker
+  4. every reference 1..N is cited in the submission manuscript and, when present,
+     the author mirror; no citation marker
      points outside 1..N
   5. abstract_structured.md regenerates byte-identically from the submission
      manuscript (single source of truth)
   6. every decimal in the standalone abstract also appears in the manuscript body
      *excluding the abstract itself* — otherwise the check is vacuous
   7. the headline numbers of the transportability table (unadjusted and adjusted
-     per-SD hazard ratio for each locked cohort, calibration slopes, PH p-values)
+     per-SD hazard ratio for each locked cohort, raw-score Cox coefficients, PH p-values)
      appear in both the submission markdown and the rendered final PDF
   8. the supplementary package files are physically present and the REMARK
      checklist covers all 20 items
@@ -50,7 +51,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SUB = ROOT / "submission_bcrt"
 RAW = ROOT / "results/raw"
-logf = open(ROOT / "logs/submission_gate.log", "w")
+LOGS = ROOT / "logs"
+LOGS.mkdir(parents=True, exist_ok=True)
+logf = open(LOGS / "submission_gate.log", "w")
 fails = []
 n_checks = 0
 
@@ -187,8 +190,13 @@ def cited_numbers(text):
     return out
 
 
-for name, path in [("submission", SUB / "manuscript_submission.md"),
-                   ("author", ROOT / "manuscript/manuscript.md")]:
+citation_sources = [("submission", SUB / "manuscript_submission.md")]
+author_mirror = ROOT / "manuscript/manuscript.md"
+if author_mirror.is_file():
+    citation_sources.append(("author", author_mirror))
+else:
+    log("SKIP  author mirror absent; the review package carries the submission source")
+for name, path in citation_sources:
     body = split_at(path, "## References")
     used = sorted(cited_numbers(body))
     check(f"{name}: every citation in 1..N",
@@ -220,6 +228,24 @@ missing = [n for n in nums if n not in body_no_abs]
 check("abstract decimals all present in the manuscript body", not missing,
       f"{len(nums)} decimals, missing={missing}")
 
+# ---------------------------------------------------------------- prespecification and cohort-role consistency
+intro_end = sub_full.find("## Methods")
+intro_text = sub_full[sub_full.find("## Introduction"):intro_end] if intro_end > 0 else ""
+check("Introduction separates secondary estimands from post hoc PAM50 analysis",
+      "incremental discrimination and absolute-threshold performance were secondary questions" in intro_text.lower()
+      and "pam50 subtype heterogeneity in scan-b was exploratory and post hoc" in intro_text.lower()
+      and not re.search(r"pre.?specified.{0,120}PAM50", intro_text, re.I),
+      "PAM50 is labelled exploratory/post hoc; no prespecification claim remains")
+method_eval_start = sub_full.find("### Cohort evaluation and subsequent cross-platform validation")
+method_eval_end = sub_full.find("### PAM50 analyses", method_eval_start)
+method_eval = sub_full[method_eval_start:method_eval_end] if method_eval_start >= 0 and method_eval_end > method_eval_start else ""
+check("GSE20685 supportive status is distinct from later fixed-parameter cohorts",
+      "supportive same-platform evidence" in method_eval.lower()
+      and "cannot establish whether score freezing preceded" in method_eval.lower()
+      and "subsequent commits document application of the fixed" in method_eval.lower()
+      and "SCAN-B and METABRIC" in method_eval,
+      "same-commit timing is disclosed; later fixed-parameter evidence is attributed to SCAN-B/METABRIC")
+
 # ---------------------------------------------------------------- 7. headline numbers
 # Chain of custody for the numbers the external review asked to unify (P1-8/P1-10):
 # results/raw/adjusted_per_sd.json  ->  tables/Tab3_performance_v3.tsv  ->  rendered PDF.
@@ -230,7 +256,7 @@ tab3 = [ln.split("\t") for ln in
         (ROOT / "tables/Tab3_performance_v3.tsv").read_text().strip().splitlines()]
 hdr, rows = tab3[0], tab3[1:]
 COHORT_IN_TABLE = {"GSE20685": "GSE20685", "SCANB": "SCAN-B", "METABRIC": "METABRIC"}
-check("Table 3 has exactly one row per locked validation cohort",
+check("Table 3 has exactly one row per model-evaluation cohort",
       len(rows) == 3 and all(any(k in r[0] for r in rows) for k in COHORT_IN_TABLE.values()),
       f"{len(rows)} data rows: {[r[0] for r in rows]}")
 try:
@@ -249,9 +275,9 @@ for cohort, tag in COHORT_IN_TABLE.items():
     check(f"Table 3 adjusted HR cell for {cohort} equals adjusted_per_sd.json",
           want in cell, f"cell={cell!r} json={adj}")
 
-slopes = {c: f"{aps[c]['calib_slope']:.2f}" for c in COHORT_IN_TABLE}
-check("calibration slopes rendered in the final PDF",
-      all(s in pdf_flat for s in slopes.values()), str(slopes))
+score_coefficients = {c: f"{aps[c]['calib_slope']:.2f}" for c in COHORT_IN_TABLE}
+check("raw-score Cox coefficients rendered in the final PDF",
+      all(s in pdf_flat for s in score_coefficients.values()), str(score_coefficients))
 
 # ---------------------------------------------------------------- 7b. table legibility
 # A wide table can render "successfully" while wrapping every header and number
@@ -260,9 +286,9 @@ check("calibration slopes rendered in the final PDF",
 # padding are the usual cause, and nothing else in the build notices.  So the
 # rendered deliverables are searched for whole tokens.
 LEGIBILITY = {
-    "Table 1 headers": ["n_tumors", "n_normals", "OS_events", "Median_OS", "Platform", "PMID"],
+    "Table 1 headers": ["n_tumors", "n_normals", "OS_events", "Median time (y)", "Platform", "PMID"],
     "Table 1 cells": ["23740839", "21501481", "27006338", "32913985"],
-    "Table 3 headers": ["deaths", "Slope", "High/Low", "Binary HR"],
+    "Table 3 headers": ["deaths", "Raw-score β", "High/Low", "Binary HR"],
     "Table 3 cells": ["1909/71", "156/3117", "48/279", "0.595", "0.573", "0.229"],
     "Table 3 adjusted column": [f"{aps[c]['per_SD_HR']:.2f} [{aps[c]['per_SD_CI'][0]:.2f},"
                                 f"{aps[c]['per_SD_CI'][1]:.2f}]"
@@ -313,6 +339,26 @@ def norm(s):
     correctly rendered section as missing — and, worse, a mis-ordered one as fine.
     """
     return re.sub(r"\s+", " ", s.replace("\\", " ")).strip()
+
+
+# Supplementary figures are supplied in ESM_1.pdf and must not be duplicated in
+# the editable/main manuscript formats. Body citations such as "Fig. S3" remain.
+SUPP_CAPTION_OPENERS = [
+    "Overall survival follow-up histograms (left)",
+    "Locked-score distributions with the frozen derivation-cohort cutoff",
+    "Scaled Schoenfeld residual plots for the locked",
+    "Hazard ratio per SD of the locked score as a function of follow-up time",
+]
+MAIN_RENDERED = ["manuscript_final.pdf", "manuscript_review.pdf", "manuscript_bcrt.doc"]
+for f in MAIN_RENDERED:
+    content = norm(texts.get(f, ""))
+    leaked = [opener for opener in SUPP_CAPTION_OPENERS if norm(opener) in content]
+    check(f"{f} keeps supplementary figure captions in the separate ESM", not leaked,
+          f"duplicated captions={leaked}")
+tex_supp_captions = re.findall(
+    r"\\caption\{\{\\bf (Fig\. S[1-4])\}", texts.get("manuscript_bcrt.tex", ""))
+check("manuscript_bcrt.tex keeps supplementary figure captions in the separate ESM",
+      not tex_supp_captions, str(tex_supp_captions))
 
 
 def url_text(s):
@@ -505,14 +551,18 @@ check("submission_bcrt holds only uploadable files", not strays, str(strays))
 # one that is actually live, or the archive is cited by a VERSION DOI — which pins
 # a single release, and the release that existed when this was written no longer
 CONCEPT_DOI = "10.5281/zenodo.22994650"
-VERSION_DOI = "10.5281/zenodo.22995292"
+CFF_TEXT = (ROOT / "CITATION.cff").read_text()
+_version_doi = re.search(r'(?m)^doi:\s*"?(10\.5281/zenodo\.\d+)', CFF_TEXT)
+VERSION_DOI = _version_doi.group(1) if _version_doi else ""
 REPO_URL = "https://github.com/gdpujee/bcrt-immune-metabolic-score"
 DOI_FILES = ["manuscript_submission.md", "declarations.md", "supplement.md",
              "ESM_1.pdf", "manuscript_final.pdf",
              "manuscript_review.pdf", "manuscript_bcrt.doc", "manuscript_bcrt.tex"]
+check("CITATION.cff has a minted version DOI", bool(VERSION_DOI), VERSION_DOI or "pending")
 for f in DOI_FILES:
     flat = url_text(flats.get(f, ""))
-    check(f"{f}: cites the version DOI", VERSION_DOI in flat, VERSION_DOI)
+    check(f"{f}: cites the version DOI", bool(VERSION_DOI) and VERSION_DOI in flat,
+          VERSION_DOI or "pending")
     check(f"{f}: cites the live repository URL", REPO_URL in flat, REPO_URL)
     wrong = sorted({d for d in re.findall(r"10\.5281/zenodo\.\d+", flat)
                     if d not in (CONCEPT_DOI, VERSION_DOI)})
@@ -532,10 +582,23 @@ ADDRESS_ALLOWED = {
 third_party = sorted({m.group(0) for m in ADDR_RE.finditer(cl)} - AUTHOR_ADDRESSES)
 check("third-party addresses derived from the cover letter", len(third_party) >= 3,
       f"{len(third_party)} address(es) that are not an author's")
-tracked = subprocess.run(["git", "ls-files"], cwd=str(ROOT),
-                         capture_output=True, text=True).stdout.split()
+git_files = subprocess.run(["git", "ls-files", "-z"], cwd=str(ROOT),
+                           capture_output=True, text=True)
+if git_files.returncode == 0 and git_files.stdout:
+    scan_paths = git_files.stdout.split("\0")
+    scan_floor = 200
+    scan_scope = "tracked tree"
+else:
+    # A third-party review ZIP is intentionally extracted without .git. Scan
+    # its delivered files directly instead of silently passing on an empty list.
+    scan_paths = [p.relative_to(ROOT).as_posix() for p in ROOT.rglob("*")
+                  if p.is_file() and not p.is_symlink() and "logs" not in p.relative_to(ROOT).parts]
+    scan_floor = 150
+    scan_scope = "extracted review package"
 stray, scanned = [], 0
-for rel in tracked:
+for rel in scan_paths:
+    if not rel:
+        continue
     if rel in ADDRESS_ALLOWED:
         continue
     p = ROOT / rel
@@ -553,8 +616,8 @@ check("third-party addresses appear only in declared correspondence/archive file
       ", ".join(stray[:5]))
 # Evidence that the scan read the tree rather than skipping it: without a floor, a
 # broken walk would report PASS on zero files.
-check("the address scan covered the tracked tree", scanned >= 200,
-      f"{scanned} files read")
+check(f"the address scan covered the {scan_scope}", scanned >= scan_floor,
+      f"{scanned} files read; required at least {scan_floor}")
 
 log(f"\nSUBGATE-001: {n_checks} checks, {len(fails)} failure(s)"
     + (": " + ", ".join(fails) if fails else ""))

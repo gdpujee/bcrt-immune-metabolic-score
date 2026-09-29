@@ -44,8 +44,9 @@ OWNER_REPO = "gdpujee/bcrt-immune-metabolic-score"
 REPO_URL = f"https://github.com/{OWNER_REPO}"
 CONCEPT_DOI = "10.5281/zenodo.22994650"
 CONCEPT_RECORD = CONCEPT_DOI.rsplit(".", 1)[1]
-VERSION_DOI = "10.5281/zenodo.22995292"
-VERSION = "v1.0.1"
+VERSION_DOI = re.search(r'(?m)^doi:\s*"?([^"\s]+)', LOCAL_CFF)
+VERSION_DOI = VERSION_DOI.group(1) if VERSION_DOI else None
+VERSION = LOCAL_ZENODO.get("version", "")
 GENERATED_UPSTREAM = {"MANIFEST.sha256"}
 MANIFEST = ROOT / "dist/public_release.manifest.json"
 LOCAL_ZENODO = json.loads((ROOT / ".zenodo.json").read_text())
@@ -190,8 +191,9 @@ if meta:
                   f"expected={LOCAL_CFF_TITLE!r}, observed="
                   f"{title_match.group(1) if title_match else 'missing'}")
             cff_dois = set(re.findall(r"10\.5281/zenodo\.\d+", remote_cff))
-            check("public CITATION.cff cites the current version DOI",
-                  VERSION_DOI in cff_dois, str(sorted(cff_dois)))
+            if VERSION_DOI:
+                check("public CITATION.cff cites the current version DOI",
+                      VERSION_DOI in cff_dois, str(sorted(cff_dois)))
         except Exception as e:                         # noqa: BLE001
             note("the public citation title could be checked", f"{type(e).__name__}: {e}")
         try:
@@ -223,7 +225,7 @@ try:
     req = urllib.request.Request(f"https://doi.org/{CONCEPT_DOI}",
                                  headers={"User-Agent": "bio-dsh-public-release-audit/1.0"})
     with urllib.request.urlopen(req, timeout=30) as r:
-        check("the concept DOI resolves", r.status == 200, r.geturl())
+    check("the concept DOI resolves", r.status == 200, r.geturl())
 except urllib.error.HTTPError as e:
     check("the concept DOI resolves", False, f"HTTP {e.code}")
 except Exception as e:                                   # noqa: BLE001

@@ -1,4 +1,4 @@
-"""Materialise the METABRIC prespecified complete-case adjusted frame (MBADJ-FRAME-001).
+"""Materialise the documented METABRIC complete-case adjusted frame (MBADJ-FRAME-001).
 
 External review round 4 item 10 asks for the adjusted-model cox.zph diagnostics
 that GSE20685 and SCAN-B already report. The exact test runs in R (scripts/53),

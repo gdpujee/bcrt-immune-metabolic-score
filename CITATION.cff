@@ -1,17 +1,17 @@
 cff-version: 1.2.0
-message: "If you use this analysis code or the derived data tables, please cite the archived release (version DOI below) and the associated article."
+message: "If you use this analysis code or the derived data tables, please cite the archived release and the associated article."
 type: software
-title: "Cross-platform transportability of a locked immune–metabolic transcriptional score for breast cancer overall survival"
+title: "What transfers and what does not: cross-platform evaluation of a fixed immune–metabolic transcriptional score for breast cancer overall survival"
 abstract: >-
-  Analysis code and derived data for a locked 14-gene immune-metabolic
-  transcriptional score assessing cross-platform transportability in breast
-  cancer overall survival. A score built in GSE42568 with frozen genes, Cox coefficients,
-  training scaling and cutoff was applied once, without retraining, to three
-  independent validation cohorts spanning two assay classes: GSE20685
-  (Affymetrix microarray), SCAN-B GSE96058 (RNA-seq) and METABRIC (Illumina
-  HT-12 microarray). The continuous per-SD association replicated in all three
-  cohorts while the absolute cutoff did not transport. Exploratory five-class
-  PAM50 heterogeneity in SCAN-B was not reproduced in the broader METABRIC
+  Analysis code and derived data for a fixed 14-gene immune-metabolic
+  transcriptional score evaluated across breast cancer cohorts. The score was
+  derived in GSE42568 and evaluated supportively in GSE20685; the model-lock and
+  initial GSE20685 analysis share a commit, so their order is unresolved.
+  Subsequent commits document application of fixed parameters without refitting
+  to SCAN-B GSE96058 (RNA-seq) and METABRIC (Illumina HT-12). The continuous
+  per-SD association had the same direction across these cohort evaluations,
+  while the absolute cutoff did not transport. PAM50 heterogeneity in SCAN-B was
+  exploratory and post hoc and was not reproduced in the broader METABRIC
   CLAUDIN_SUBTYPE analysis.
 authors:
   - family-names: He
@@ -22,9 +22,8 @@ authors:
     given-names: Qiang
     affiliation: "Unaffiliated / Independent Researcher, Foshan, Guangdong, China"
     orcid: "https://orcid.org/0009-0003-6404-335X"
-version: "v1.0.1"
-date-released: "2026-09-27"
-doi: "10.5281/zenodo.22995292"
+version: "v1.0.2"
+date-released: "2026-09-29"
 license: MIT
 license-url: "https://opensource.org/licenses/MIT"
 repository-code: "https://github.com/gdpujee/bcrt-immune-metabolic-score"

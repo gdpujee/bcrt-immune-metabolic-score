@@ -1,5 +1,5 @@
 Analysis	n	deaths	Estimate	Note
-Training GSE42568 (derivation, non-inferential)	104	35	binary HR 12.93; C 0.86 (bootstrap 0.73)	the derivation cohort constructed the frozen score; its estimates are optimistic and are not used as evidence of prognostic performance
+Training GSE42568 (derivation, non-inferential)	104	35	binary HR 12.93; apparent C 0.86	the derivation cohort constructed the frozen score; apparent estimates are non-inferential, and no valid full-pipeline optimism-corrected C-index was estimated
 GSE20685 adjusted, per 1 score unit	327	83	1.59 [1.28,1.98]	SD=1.01; covariates age+T+N
 SCAN-B adjusted, per 1 score unit	3273	336	1.37 [1.26,1.48]	SD=1.21; covariates age+ER+HER2
-METABRIC adjusted, per SD (complete case)	1815	1041	1.08 [1.00,1.17]	the prespecified METABRIC model enters the score as its per-SD linear predictor, so the per-SD scale is native here; complete-case primary, imputation sensitivity in the supplement
+METABRIC adjusted, per SD (complete case)	1815	1041	1.08 [1.00,1.17]	the METABRIC model enters the score as its per-SD linear predictor, so the per-SD scale is native here; complete-case primary, imputation sensitivity in the supplement

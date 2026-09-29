@@ -34,7 +34,9 @@ E = clin.set_index("GSM").loc[train_gsm, "OS_event"].values.astype(int)
 means = X.mean(axis=0); sds = X.std(axis=0, ddof=0).replace(0, 1.0)
 Z = (X - means)/sds
 
-# 1) univariable Cox screen p<0.01
+# 1) Full-derivation-cohort univariable Cox screen p<0.01. This screen is run once
+# before the folds below; the 5-fold CV tunes alpha within the screened set and is
+# not a nested estimate of full-pipeline performance.
 rows=[]
 for g in Z.columns:
     try:
@@ -148,7 +150,10 @@ res_g = PHReg(T, gnum, E).fit(disp=0)
 HR_gl = float(np.exp(res_g.params[0])); p_gl = float(res_g.pvalues[0])
 # C-index overall
 C = cindex(T,E,risk)
-# time-dependent AUC at 1/3/5y (cumulative cases, dynamic controls: event<=t vs T>t)
+# Descriptive known-status cumulative/dynamic classification AUC at 1/3/5y.
+# Cases are observed events by t; controls are patients followed beyond t;
+# patients censored on or before t without an event are excluded. This is not an
+# IPCW-corrected survival ROC estimator.
 def td_auc(t0):
     y = ((T<=t0)&(E==1)).astype(int)
     # controls: T>t0; exclude censored before t0
@@ -157,20 +162,6 @@ def td_auc(t0):
     return float(roc_auc_score(y[mask], risk[mask])), int(mask.sum())
 aucs = {f"{t}y": td_auc(t) for t in [1,3,5]}
 log(f"log-rank chi2={chi2v:.2f} p={plog:.4g}; HR High-vs-Low={HR_gl:.2f} p={p_gl:.4g}; C={C:.3f}; AUCs={aucs}")
-
-# bootstrap optimism (200)
-rng = np.random.default_rng(SEED)
-Cs=[]
-for b in range(200):
-    idx = rng.integers(0, len(T), len(T))
-    try:
-        rb = PHReg(T[idx], Xm[idx], E[idx]).fit(disp=0)
-        risk_b = Xm @ np.asarray(rb.params).ravel()
-        Cs.append(cindex(T,E,risk_b))
-    except Exception: pass
-C_boot = float(np.mean(Cs)) if Cs else C
-optimism = C - C_boot
-log(f"Bootstrap (200) mean C={C_boot:.3f}, optimism={optimism:.3f}")
 
 # save locked model
 locked = {"version":"v1.0 TRAIN-001 2026-09-20","seed":SEED,"genes":sel_genes,"coefs":[float(x) for x in coefs],
@@ -188,7 +179,7 @@ plt.legend(); plt.tight_layout(); plt.savefig(FIG/"train_KM.png",dpi=150); plt.s
 # summary json
 with open(RES/"train_summary.json","w") as f:
     json.dump({"n":int(len(T)),"events":int(E.sum()),"n_uni_sig":int(len(sig)),"n_selected":int(len(sel_genes)),
-     "genes":sel_genes,"coefs":[float(x) for x in coefs],"cutoff":cutoff,"C":float(C),"C_boot":float(C_boot),
+      "genes":sel_genes,"coefs":[float(x) for x in coefs],"cutoff":cutoff,"C":float(C),
      "HR_high_low":float(HR_gl),"logrank_p":float(plog),"aucs":{k:[float(v[0]) if v[0]==v[0] else None,v[1]] for k,v in aucs.items()}},f,indent=2)
 log("WROTE locked_model.json, train_KM.png, train_summary.json")
 logf.close()

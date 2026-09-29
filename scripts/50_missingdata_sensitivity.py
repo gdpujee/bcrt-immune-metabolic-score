@@ -4,7 +4,8 @@ The missing-data policy paragraph (Methods, supplement, REMARK) states that the
 GSE20685 and SCAN-B primary adjusted models are median-imputed full-cohort fits
 with complete-case analyses "yielding consistent estimates".  That claim must be
 readable from a raw output file like every other number, so this script fits the
-same prespecified covariate sets on complete cases only and records the result.
+the reported covariate sets on complete cases only and records the result. The
+available materials do not establish when the covariate sets were selected.
 
 Outputs: results/raw/missingdata_sensitivity.json, logs/missingdata_sensitivity.log
 """
@@ -45,8 +46,9 @@ def fit_cc(df, covs, label, sd):
     return out
 
 
-out = {"method": "statsmodels PHReg, per-SD locked risk, prespecified adjusted "
-        "covariate sets fitted on complete cases only (sensitivity; the primary "
+out = {"method": "statsmodels PHReg, per-SD locked risk, reported adjusted "
+        "covariate sets fitted on complete cases only (sensitivity; selection timing "
+        "not established; the primary "
         "models are median-imputed full-cohort fits)"}
 
 # ---- GSE20685: age + T + N ----

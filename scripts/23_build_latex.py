@@ -2,7 +2,7 @@
 
 Standard article class (compiles with any LaTeX engine; BCRT accepts LaTeX
 source at submission). Includes full text, 4 tables (tabular from TSVs) and
-14 figure environments referencing the committed PDF twins. Review rendering
+12 main-figure environments referencing the committed PDF twins. Review rendering
 only; no scientific content is created or altered here.
 Outputs: manuscript/latex/main.tex, submission_bcrt/manuscript_bcrt.tex, logs/latex_src.log
 """
@@ -128,7 +128,9 @@ out = ["\\documentclass[11pt,a4paper]{article}",
        "\\maketitle", ""]
 nfig = ntbl = 0
 skip_sec = False
-for ln in MS.read_text().split("\n"):
+lines = [ln for ln in MS.read_text().split("\n")
+         if not re.match(r"^- \*\*Fig\. S\d+\*\*", ln)]
+for ln in lines:
     ln = ln.rstrip()
     if ln.startswith("# "):
         continue
@@ -224,7 +226,7 @@ for ln in MS.read_text().split("\n"):
         out.append(tex(ln) + "\n")
 out.append("\\end{document}")
 
-n_legends = sum(1 for l in MS.read_text().split("\n") if l.startswith("- **Fig"))
+n_legends = sum(1 for l in lines if l.startswith("- **Fig"))
 if nfig != n_legends:
     raise SystemExit(f"{nfig} image(s) embedded for {n_legends} figure legend(s)")
 latex_content = "\n".join(out)

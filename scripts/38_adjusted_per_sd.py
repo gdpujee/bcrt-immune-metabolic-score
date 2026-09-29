@@ -6,10 +6,11 @@ hazard ratios to be reported in the same unit.  The manuscript's existing
 adjusted models were reported per 1 score unit (GSE20685 SD=1.01, SCAN-B
 SD=1.21), which makes the three cohorts non-comparable.
 
-This script refits each cohort's prespecified adjusted model exactly as
-documented (GSE20685: age + T + N; SCAN-B: age + ER + HER2; METABRIC: the
-prespecified six-covariate set), with the same median/mode imputation used in the
-published models, and reports the adjusted HR (95% CI) for a one-SD increase in
+This script refits the documented adjusted models (GSE20685: age + T + N;
+SCAN-B: age + ER + HER2; METABRIC: age + nodes + grade + ER + HER2 + size),
+with the same median/mode imputation used in the published models. The review
+package does not establish when the METABRIC covariate set was selected. The script
+reports the adjusted HR (95% CI) for a one-SD increase in
 the locked score so that it is directly comparable with the primary unadjusted
 per-SD estimate.  Reproduction of the previously published per-unit point
 estimates is asserted, so this is a change of scale, not of model.
@@ -138,11 +139,11 @@ out["METABRIC"] = {
     "per_SD_HR": round(ccr["HR"], 4),
     "per_SD_CI": [round(ccr["CI"][0], 4), round(ccr["CI"][1], 4)],
     "per_SD_p": ccr["p"],
-    "primary_model": "complete-case, prespecified six-covariate set",
+    "primary_model": "complete-case, six-covariate clinical model",
     "imputed_sensitivity_per_SD_HR": round(mi["HR"], 4),
     "imputed_sensitivity_per_SD_CI": [round(mi["CI"][0], 4), round(mi["CI"][1], 4)],
     "covariates": "age + positive nodes + grade + ER + HER2 + tumor size "
-                  "(T category; prespecified, complete case)"}
+                  "(T category; complete case)"}
 log(f"METABRIC (complete case, per-SD): n={out['METABRIC']['n']} "
     f"deaths={out['METABRIC']['deaths']} HR={out['METABRIC']['per_SD_HR']:.3f} "
     f"[{out['METABRIC']['per_SD_CI'][0]:.3f},{out['METABRIC']['per_SD_CI'][1]:.3f}] "
@@ -158,7 +159,7 @@ out["note"] = ("All adjusted hazard ratios are expressed per one SD of the locke
                "directly comparable. Per-1-score-unit values are retained in the "
                "supplementary table. The score itself is never refit.")
 
-# ---- METABRIC calibration slope (Cox coefficient of the raw score; 1.0 = perfect) ----
+# ---- METABRIC raw-score Cox coefficient (not absolute-risk calibration) ----
 mc = pd.read_csv(META / "METABRIC_clinical_dl.tsv", sep="\t").drop_duplicates("patientId")
 mr = pd.read_csv(RAW / "metabric_risk.tsv", sep="\t")
 mc = mc.merge(mr, on="patientId")
@@ -168,16 +169,17 @@ keep = mt.notna() & (mt > 0)
 rs = PHReg(mt[keep].values, mc.risk.values[keep].reshape(-1, 1), me[keep].values).fit(disp=0)
 out["METABRIC"]["calib_slope"] = round(float(rs.params[0]), 4)
 out["METABRIC"]["calib_slope_SE"] = round(float(rs.bse[0]), 4)
-log(f"METABRIC calibration slope (Cox coef of raw score, 1.0=perfect): "
+log(f"METABRIC raw-score Cox coefficient (not an absolute-risk calibration): "
     f"{out['METABRIC']['calib_slope']:.4f} SE {out['METABRIC']['calib_slope_SE']:.4f}")
 out["GSE20685"]["calib_slope"] = 0.4647
 out["GSE20685"]["calib_slope_SE"] = 0.1093
 out["SCANB"]["calib_slope"] = 0.3029
 out["SCANB"]["calib_slope_SE"] = 0.0406
-out["calib_slope_source"] = ("Cox coefficient of the locked score refit in each "
-                             "validation cohort (1.0 = perfect calibration); GSE20685 "
-                             "and SCAN-B values from results/raw/corrective_summary.json "
-                             "and rnaseq_summary.json, METABRIC computed here.")
+out["calib_slope_source"] = ("Univariable Cox coefficient of the raw locked score in each "
+                             "validation cohort; a score-scale diagnostic, not a calibration "
+                             "of absolute survival probabilities. GSE20685 and SCAN-B values "
+                             "come from the corresponding cohort analyses; METABRIC is "
+                             "computed here.")
 
 json.dump(out, open(RAW / "adjusted_per_sd.json", "w"), indent=2)
 log("WROTE results/raw/adjusted_per_sd.json (ADJSD-001)")

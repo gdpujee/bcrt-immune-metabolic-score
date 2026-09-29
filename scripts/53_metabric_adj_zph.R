@@ -1,5 +1,5 @@
-# Exact ranked-time Grambsch-Therneau test for the METABRIC prespecified
-# complete-case ADJUSTED model (MBADJ-ZPH-001) — external review round 4 item 10:
+# Exact ranked-time Grambsch-Therneau test for the documented METABRIC
+# complete-case adjusted model (MBADJ-ZPH-001); selection timing is not established:
 # GSE20685 and SCAN-B already report adjusted-model cox.zph; METABRIC must too.
 # The frame is built by scripts/52_metabric_adj_frame.py, which asserts it
 # reproduces the published complete-case n/deaths (1815/1041) before fitting.
@@ -22,7 +22,7 @@ vars <- lapply(seq_along(covs), function(i) list(
   chisq = unname(tab[i, "chisq"]), p = unname(tab[i, "p"])))
 names(vars) <- covs
 out <- list(
-  method = "survival::cox.zph (rank transform, Breslow ties) on the prespecified complete-case adjusted model",
+  method = "survival::cox.zph (rank transform, Breslow ties) on the documented complete-case adjusted model; covariate-set selection timing not established",
   survival_version = as.character(packageVersion("survival")),
   unit = "risk_sd = per SD of the locked linear predictor, within-cohort SD",
   n = nrow(d), events = sum(d$OS_event),

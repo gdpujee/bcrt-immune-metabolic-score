@@ -92,7 +92,8 @@ hr_b=float(np.exp(rb.params[0])); ci_b=[float(np.exp(rb.params[0]-1.96*rb.bse[0]
 _,plog=logrank(T[hi],E[hi],T[~hi],E[~hi])
 C=cindex(T,E,risk)
 log(f"SECONDARY locked cutoff {cutoff:.3f}: High={hi.sum()}/Low={(~hi).sum()}, HR={hr_b:.2f} [{ci_b[0]:.2f},{ci_b[1]:.2f}] p={float(rb.pvalues[0]):.3g}, logrank p={plog:.3g}, C={C:.3f}")
-# bootstrap CIs
+# Bootstrap CIs for Harrell's C and descriptive known-status cumulative/dynamic
+# AUCs below (not IPCW-corrected; censored before/at t are excluded).
 B=500; Cb=[]; A3=[];A5=[]
 n=len(T)
 for b in range(B):

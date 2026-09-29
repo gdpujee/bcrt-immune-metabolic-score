@@ -1,6 +1,6 @@
 {
-  "title": "Cross-platform transportability of a locked immune–metabolic transcriptional score for breast cancer overall survival",
-  "description": "<p>Analysis code and derived data accompanying the manuscript “Cross-platform transportability of a locked immune–metabolic transcriptional score for breast cancer overall survival.”</p><p>A score built in GSE42568 (104 tumours, 35 deaths) with frozen genes, Cox coefficients, training scaling and cutoff was applied once, without retraining or recentering, to three independent validation cohorts spanning two assay classes: GSE20685 (Affymetrix microarray, 327 tumours), SCAN-B GSE96058 (RNA-seq, 3,273 patients) and METABRIC (Illumina HT-12 microarray, 1,980 analyzable patients). The primary estimand is the continuous per-SD association from Cox regression.</p><p>Headline finding: the continuous association replicated in all three cohorts (per-SD HR 1.59 [95% CI 1.29-1.98], 1.44 [1.31-1.59] and 1.13 [1.07-1.20]) while the absolute cutoff did not transport, and the exploratory five-class PAM50 heterogeneity pattern in SCAN-B was not reproduced in the broader METABRIC CLAUDIN_SUBTYPE analysis (global interaction p=0.42). Effects were time-dependent in the microarray cohorts.</p><p>This archive contains the pipeline scripts, the derived result files (JSON/TSV), the figure sources and the derived data tables. It does not contain the primary expression or clinical data, which are obtained from the public accessions named in the repository README.</p>",
+  "title": "What transfers and what does not: cross-platform evaluation of a fixed immune–metabolic transcriptional score for breast cancer overall survival",
+  "description": "<p>Analysis code and derived data accompanying the manuscript “What transfers and what does not: cross-platform evaluation of a fixed immune–metabolic transcriptional score for breast cancer overall survival.”</p><p>A 14-gene score was derived in GSE42568 (104 tumours, 35 deaths). The model-lock record and initial GSE20685 analysis are in the same commit, so their order cannot be established; GSE20685 is treated as supportive same-platform evidence. Subsequent commits document application of the fixed parameters without refitting or recentering to SCAN-B GSE96058 (RNA-seq, 3,273 patients) and METABRIC (Illumina HT-12, 1,980 patients). The continuous per-SD association had the same direction in all three cohort evaluations, while the absolute cutoff did not transport and calibration was poor.</p><p>The exploratory five-class PAM50 heterogeneity pattern in SCAN-B was not reproduced in the broader METABRIC CLAUDIN_SUBTYPE analysis (global interaction p=0.42). Effects were time-dependent in the microarray cohorts. The archive contains the pipeline scripts, derived result files (JSON/TSV), figure sources and derived data tables, but not the primary expression or clinical data, which are obtained from the public accessions named in the repository README.</p>",
   "creators": [
     {
       "name": "He, Danhua",
@@ -28,7 +28,7 @@
   "upload_type": "software",
   "access_right": "open",
   "language": "eng",
-  "version": "v1.0.1",
+  "version": "v1.0.2",
   "related_identifiers": [
     {
       "identifier": "https://github.com/gdpujee/bcrt-immune-metabolic-score",

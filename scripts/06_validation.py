@@ -78,6 +78,9 @@ adj = adj.fillna(adj.median())
 res_adj = PHReg(T, adj.values, E).fit(disp=0)
 log(f"Adjusted Cox (risk+age+T+N): risk HR={np.exp(res_adj.params[0]):.2f} p={res_adj.pvalues[0]:.3g}")
 C = cindex(T,E,risk)
+# Descriptive known-status cumulative/dynamic classification AUC: events by t0
+# are cases, follow-up beyond t0 are controls, and censored observations at or
+# before t0 without an event are excluded. This is not IPCW-corrected.
 def td_auc(t0):
     y=((T<=t0)&(E==1)).astype(int); mask=((T<=t0)&(E==1))|(T>t0)
     if y[mask].sum()==0 or y[mask].sum()==mask.sum(): return float("nan"), int(mask.sum())

@@ -5,7 +5,8 @@ Inputs: data/processed/*_expr_gene.tsv, metadata/*_curated.tsv
 Outputs: results/raw/DE_*.tsv, results/raw/KEGG_*.{json,gmt}, results/raw/candidate_pool.tsv, logs/kegg_fetch.log
 KEGG: FROZEN committed snapshot by default (reproducible reruns); --refresh refetches
 from rest.kegg.jp with real date + content hash, failing hard on any fetch error.
-Pathways prespecified in ANALYSIS_PLAN.
+Pathway sets used in the implemented candidate-pool procedure; the frozen plan does
+not establish the pathway identities or relaxed fold-change threshold as prespecified.
 """
 import pandas as pd, numpy as np, json, requests, time, argparse, hashlib, datetime
 from pathlib import Path
@@ -14,7 +15,8 @@ from statsmodels.stats.multitest import multipletests
 
 ROOT = Path(__file__).resolve().parents[1]
 PROC = ROOT/"data/processed"; META = ROOT/"metadata"; RES = ROOT/"results/raw"; LOGS = ROOT/"logs"
-# KEGG pathways prespecified
+# KEGG sets used in the implemented procedure; the frozen plan does not establish
+# that these pathway identities were prespecified.
 METABOLIC = {"hsa00010":"Glycolysis_Gluconeogenesis","hsa00071":"Fatty_acid_degradation","hsa00061":"Fatty_acid_biosynthesis","hsa00190":"Oxidative_phosphorylation","hsa00030":"Pentose_phosphate","hsa00480":"Glutathione_metabolism"}
 IMMUNE = {"hsa04060":"Cytokine_cytokine_receptor","hsa04062":"Chemokine_signaling","hsa04612":"Antigen_processing_presentation","hsa04650":"NK_cytotoxicity","hsa04660":"T_cell_receptor"}
 ALL_KEGG = {**METABOLIC, **IMMUNE}
@@ -147,7 +149,7 @@ de458.to_csv(RES/"DE_GSE45827_tumor_vs_normal.tsv",sep="\t",index=False)
 log(f"GSE45827: DEGs FDR<0.05 & |log2FC|>1: {((de458.p_adj_BH<0.05)&(de458.log2FC_median_diff.abs()>1)).sum()} / {len(de458)}")
 
 # candidate pool = DEGs(42568) ∩ KEGG_union ∩ training genes
-sig425 = set(de425[(de425.p_adj_BH<0.05)&(de425.log2FC_median_diff.abs()>0.5)]["symbol"])  # prespecified relaxed |logFC|>0.5 for pool (recorded); strict >1 reported separately
+sig425 = set(de425[(de425.p_adj_BH<0.05)&(de425.log2FC_median_diff.abs()>0.5)]["symbol"])  # implemented relaxed |log2FC|>0.5 pool threshold; prespecification is not established; strict >1 reported separately
 kegg_union = met_genes|imm_genes
 pool = sig425 & kegg_union
 # annotate metabolic vs immune
