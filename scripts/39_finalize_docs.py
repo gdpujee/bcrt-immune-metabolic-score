@@ -377,7 +377,7 @@ FIG_FILES = {
 TBL_FILES = {
     "Table 1": "Tab1_cohorts_v3", "Table 2": "Tab2_coefficients",
     "Table 3": "Tab3_performance_v3", "Table 4": "Tab4_incremental_value",
-    "Table S1": "TabS1_derivation_and_units",
+    "Table S1": "TabS1_derivation_and_units", "Table S2": None, "Table S3": None,
 }
 # The order a reader expects: main figures 1..12, then supplementary S1..S4.
 EXPECTED_ORDER = ([f"Fig. {i}" for i in range(1, 13)]
@@ -411,7 +411,7 @@ def build_legends():
     L = ["# Figure legends and table titles", "",
          "This file repeats the legend text of `manuscript_submission.md` beside the "
          "file name of each figure, so artwork can be uploaded against its caption. "
-         "Figures S1-S4 and Table S1 are included in Online Resource 1.", "",
+         "Figures S1-S4 and Tables S1-S3 are included in Online Resource 1.", "",
          "## Figures", ""]
     for b in figs:
         m = re.match(r"- \*\*(Fig\.? ?S?\d+)\*\* (.*)", b)
@@ -424,7 +424,7 @@ def build_legends():
         m = re.match(r"- \*\*(Table ?S?\d+)\.\*\* (.*)", b)
         label = m.group(1)
         L.append(f"- **{label}.** {m.group(2)}  ")
-        if label in TBL_FILES:
+        if TBL_FILES.get(label):
             L.append(f"  File: `tables/{TBL_FILES[label]}.tsv`.")
     L.append("")
     leg.write_text("\n".join(L))
@@ -454,8 +454,9 @@ stage(tp, [("Keywords: " + KW_OLD, "Keywords: " + KW_NEW)], "title-page-keywords
 
 # ------------------------------------------------------------------ declarations
 dec = SUB / "declarations.md"
-stage(dec, [("All pipeline scripts (01-31)", "All pipeline scripts (01-42)")],
-      "declarations")
+if "corrected conditional-alpha bootstrap" not in dec.read_text():
+    raise SystemExit("declarations omit the archived bootstrap analysis")
+log("[declarations] current archive contents described")
 
 # ------------------------------------------------------------------ archived release
 # The paper promises that the code and the derived tables are available.  The
@@ -477,7 +478,7 @@ CONCEPT = "https://doi.org/10.5281/zenodo.22994650"
 AVAIL_TAIL = f"publicly available at {REPO}."
 
 VERSION_DOI = _version_doi.group(1)
-CONCEPT_DOI = CONCEPT.rsplit("/", 1)[1]
+CONCEPT_DOI = re.search(r"10\.5281/zenodo\.\d+", CONCEPT).group(0)
 
 
 def sync_version_doi(path):
@@ -513,16 +514,12 @@ for _path in (sub, dec, SUB / "cover_letter.md", MS / "supplement.md"):
 SUP_SRC = MS / "supplement.md"
 SUP = SUB / "supplement.md"
 
-# The S5 availability line claimed that the run logs were archived in the public
-# repository.  The release deliberately excludes `logs/` - one of them is this
-# project's gate log, an internal artifact that has no place in a reader-facing
-# archive - so the sentence is corrected to claim only what is published.
-stage(SUP_SRC, [("All analysis code, intermediate result files, run logs and the "
-                 f"complete analysis chain are archived in the public repository: {REPO}.",
-                 f"The public archive holds all analysis code, the intermediate "
-                 f"result files and the complete analysis chain: {REPO}. "
-                 f"The release is archived at {ARCHIVE} (concept DOI {CONCEPT}).")],
-      "supplement-availability")
+_availability = SUP_SRC.read_text()
+if (VERSION_DOI not in _availability or CONCEPT_DOI not in _availability
+        or "corrected conditional-alpha bootstrap" not in _availability
+        or "not yet in the public" in _availability):
+    raise SystemExit("supplement availability statement is not synchronized to the public release")
+log("[supplement-availability] current Zenodo version and public analyses cited")
 
 SUPP_FIG_FILES = {
     "Fig. S1": "QC_followup_expr", "Fig. S2": "risk_distributions",

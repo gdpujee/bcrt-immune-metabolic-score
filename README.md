@@ -3,7 +3,7 @@
 Analysis code and derived data tables accompanying the manuscript *What transfers and what does not: cross-platform evaluation of a fixed immune–metabolic transcriptional score for breast cancer overall survival*,
 prepared for submission to *Breast Cancer Research and Treatment*.
 
-**Archive:** [Concept DOI for this project (latest version)](https://doi.org/10.5281/zenodo.22994650).
+**Archive:** [v1.0.6 (version DOI)](https://doi.org/10.5281/zenodo.23037317); [concept DOI (latest version)](https://doi.org/10.5281/zenodo.22994650).
 
 ## What the analysis does
 
@@ -86,9 +86,8 @@ a download can be verified with `sha256sum -c MANIFEST.sha256`.
 
 ## Citation
 
-Cite the archived release and the article. The concept DOI is above; the exact
-version DOI for the release you used is on the Zenodo record page.
-`CITATION.cff` carries machine-readable metadata if your reference manager reads it.
+Cite the archived release and the article. This repository snapshot is archived as [v1.0.6](https://doi.org/10.5281/zenodo.23037317); the concept DOI above always resolves to the latest version.
+`CITATION.cff` carries machine-readable metadata, including the exact version DOI.
 
 ## Licence
 
