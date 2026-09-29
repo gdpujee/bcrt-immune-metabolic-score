@@ -474,14 +474,32 @@ ARCHIVE = f"https://doi.org/{_version_doi.group(1)}"
 CONCEPT = "https://doi.org/10.5281/zenodo.22994650"
 AVAIL_TAIL = f"publicly available at {REPO}."
 
-stage(sub, [(f"derived data tables are {AVAIL_TAIL[:-1]} and archived at {ARCHIVE}.",
-             f"derived data tables are {AVAIL_TAIL[:-1]} and archived at {ARCHIVE}.")],
-      "submission-doi")
-stage(dec, [(f"derived data tables are {AVAIL_TAIL[:-1]} and archived at {ARCHIVE}.",
-             f"derived data tables are {AVAIL_TAIL[:-1]} and archived at {ARCHIVE}."),
-            (f"reproduction workflows are {AVAIL_TAIL[:-1]}, archived at {ARCHIVE}.",
-             f"reproduction workflows are {AVAIL_TAIL[:-1]}, archived at {ARCHIVE}.")],
-      "declarations-doi")
+VERSION_DOI = _version_doi.group(1)
+CONCEPT_DOI = CONCEPT.rsplit("/", 1)[1]
+
+
+def sync_version_doi(path):
+    """Update only this active submission source's Zenodo version DOI."""
+    text = path.read_text()
+    found = re.findall(r"10\.5281/zenodo\.\d+", text)
+    replaced = 0
+
+    def replace(match):
+        nonlocal replaced
+        if match.group(0) == CONCEPT_DOI:
+            return match.group(0)
+        replaced += 1
+        return VERSION_DOI
+
+    updated = re.sub(r"10\.5281/zenodo\.\d+", replace, text)
+    if replaced:
+        path.write_text(updated)
+    log(f"[version-doi] {path.relative_to(ROOT)}: {replaced} updated; "
+        f"{len(found) - replaced} concept reference(s) kept")
+
+
+for _path in (sub, dec, SUB / "cover_letter.md", MS / "supplement.md"):
+    sync_version_doi(_path)
 
 # ------------------------------------------------------------------ supplement + REMARK into the package
 # The supplement is a reader-facing document and carries three generator-owned

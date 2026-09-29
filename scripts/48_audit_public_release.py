@@ -251,6 +251,13 @@ try:
     check("Zenodo record title matches the current release metadata",
           md.get("title") == LOCAL_ZENODO.get("title"),
           f"expected={LOCAL_ZENODO.get('title')!r}, observed={md.get('title')!r}")
+    check("Zenodo latest archive matches the current software version",
+          md.get("version") == VERSION,
+          f"expected={VERSION!r}, observed={md.get('version')!r}")
+    if VERSION_DOI:
+        check("Zenodo latest archive has the current version DOI",
+              rec.get("doi") == VERSION_DOI,
+              f"expected={VERSION_DOI!r}, observed={rec.get('doi')!r}")
     names = [c.get("name", "") for c in md.get("creators", [])]
     check("the archived record names the two authors", len(names) == 2
           and all(re.fullmatch(r"[^,]+, .+", n) for n in names), str(names))

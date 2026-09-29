@@ -557,7 +557,8 @@ VERSION_DOI = _version_doi.group(1) if _version_doi else ""
 REPO_URL = "https://github.com/gdpujee/bcrt-immune-metabolic-score"
 DOI_FILES = ["manuscript_submission.md", "declarations.md", "supplement.md",
              "ESM_1.pdf", "manuscript_final.pdf",
-             "manuscript_review.pdf", "manuscript_bcrt.doc", "manuscript_bcrt.tex"]
+             "manuscript_review.pdf", "manuscript_bcrt.doc", "manuscript_bcrt.tex",
+             "cover_letter.md"]
 check("CITATION.cff has a minted version DOI", bool(VERSION_DOI), VERSION_DOI or "pending")
 for f in DOI_FILES:
     flat = url_text(flats.get(f, ""))
