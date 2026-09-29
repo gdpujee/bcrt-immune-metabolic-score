@@ -1,7 +1,7 @@
 # Immune–metabolic transcriptional score in breast cancer: analysis code and derived data
 
 Analysis code and derived data tables accompanying the manuscript *What transfers and what does not: cross-platform evaluation of a fixed immune–metabolic transcriptional score for breast cancer overall survival*,
-submitted to *Breast Cancer Research and Treatment*.
+prepared for submission to *Breast Cancer Research and Treatment*.
 
 **Archived software version:** [v1.0.4](https://doi.org/10.5281/zenodo.23031517) (version DOI: [10.5281/zenodo.23031517](https://doi.org/10.5281/zenodo.23031517)).
 *(Concept DOI for all versions: [10.5281/zenodo.22994650](https://doi.org/10.5281/zenodo.22994650))*
