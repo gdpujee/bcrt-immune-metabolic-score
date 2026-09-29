@@ -438,6 +438,15 @@ if supp_pdf.exists():
     pages = PdfReader(str(supp_pdf)).pages
     p1 = norm(pages[0].extract_text() or "")
     supp_flat = norm("\n".join(pg.extract_text() or "" for pg in pages))
+    blank_pages = []
+    for n, page in enumerate(pages, 1):
+        content = re.sub(
+            r"^Supplementary Information\s+[—-]\s+Breast Cancer Research and Treatment\s+Page\s+\d+\s*",
+            "", norm(page.extract_text() or ""))
+        if not content:
+            blank_pages.append(n)
+    check("supplement PDF has no blank pages", not blank_pages,
+          f"blank pages={blank_pages}")
     remark_items = []
     for ln in (SUB / "REMARK_checklist.md").read_text().splitlines():
         if re.match(r"^\|\s*\d+\s*\|", ln):

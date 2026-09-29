@@ -37,7 +37,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.platypus import (HRFlowable, Image, KeepTogether, PageBreak,
+from reportlab.platypus import (HRFlowable, Image, KeepTogether,
                                 Paragraph, SimpleDocTemplate, Spacer, Table,
                                 TableStyle)
 
@@ -343,7 +343,6 @@ if len(remark_rows) != 21:
     raise SystemExit("REMARK checklist must have a header and 20 rows; "
                      f"found {len(remark_rows)}")
 
-story.append(PageBreak())
 story.append(Paragraph("REMARK checklist", h1))
 story.append(Paragraph(
     "Completed checklist for tumor-marker prognostic studies. Item locations and "
