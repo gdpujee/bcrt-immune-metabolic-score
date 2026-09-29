@@ -5,6 +5,8 @@ prepared for submission to *Breast Cancer Research and Treatment*.
 
 **Archive:** [v1.0.6 (version DOI)](https://doi.org/10.5281/zenodo.23037317); [concept DOI (latest version)](https://doi.org/10.5281/zenodo.22994650).
 
+GitHub `main` includes subsequent terminology-only corrections: the raw-score Cox coefficient is no longer labelled a calibration slope, and the submission PDFs use the 2026-09-29 release date. The immutable v1.0.6 archive retains the original internal `calib_slope` field name; its numerical results are unchanged.
+
 ## What the analysis does
 
 A 14-gene immune–metabolic score was built in GSE42568 (104 tumours, 35 deaths). The recorded score was evaluated in GSE20685, but the model-lock record and initial GSE20685 analysis share a commit, so their order cannot be established; we treat GSE20685 as supportive same-platform evidence. Subsequent commits document application of the fixed parameters without refitting or recentering to SCAN-B and METABRIC. The primary cross-platform evidence therefore comes from these two later evaluations; the absolute cutoff and score scale are assessed as separate transportability dimensions.
@@ -15,7 +17,7 @@ A 14-gene immune–metabolic score was built in GSE42568 (104 tumours, 35 deaths
 | SCAN-B | GSE96058 | RNA-seq | 3,273 patients | 336 | Subsequent fixed-parameter cross-platform validation |
 | METABRIC | cBioPortal `brca_metabric` | Illumina HT-12 | 1,980 patients | 1,143 | Subsequent fixed-parameter cross-platform validation |
 
-The primary estimand is the continuous per-SD association from Cox regression. Positive cohort-level average per-SD associations were observed in GSE20685 and in the later fixed-parameter applications to SCAN-B and METABRIC (HR 1.59 [95% CI 1.29–1.98], 1.44 [1.31–1.59] and 1.13 [1.07–1.20], respectively). The METABRIC estimate reversed after 5 years (≤5-year HR 1.54 [1.41–1.68]; >5-year HR 0.92 [0.85–0.99]), so the positive average does not imply a persistent adverse association. The absolute cutoff did not transport. The exploratory five-class PAM50 heterogeneity pattern seen in SCAN-B was not reproduced in the broader METABRIC CLAUDIN_SUBTYPE analysis (global interaction p=0.42). Effects were time-dependent in the two microarray cohorts, so those estimates are averages over follow-up.
+The primary estimand is the continuous per-SD association from Cox regression. Positive cohort-level average per-SD associations were observed in GSE20685 and in the later fixed-parameter applications to SCAN-B and METABRIC (HR 1.59 [95% CI 1.29–1.98], 1.44 [1.31–1.59] and 1.13 [1.07–1.20], respectively). The METABRIC estimated HR was below 1 after the 5-year split (≤5-year HR 1.54 [1.41–1.68]; >5-year HR 0.92 [0.85–0.99]), so the positive average does not imply a persistent adverse association. The absolute cutoff did not transport. The exploratory five-class PAM50 heterogeneity pattern seen in SCAN-B was not reproduced in the broader METABRIC CLAUDIN_SUBTYPE analysis (global interaction p=0.42). Effects were time-dependent in the two microarray cohorts, so those estimates are averages over follow-up.
 
 ## Repository layout
 
