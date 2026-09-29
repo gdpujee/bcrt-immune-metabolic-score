@@ -82,19 +82,20 @@ later SCAN-B and METABRIC applications, recorded in subsequent commits, which
 used the locked parameters without refitting. No validation-driven tuning is
 documented, but the same-commit record alone cannot prove the exact sequence.
 
-**Public verifiability status (updated 2026-09-27).** The three hashes above
+**Public verifiability status (updated 2026-09-29).** The three hashes above
 come from the development repository's full history (347 commits) and are kept
 as the **original local audit-trail timestamps**. That full development history
 remains local to protect pre-publication drafting files, so those specific commit
 hashes are not resolvable on the public remote and are not claimed to be.
 
-What IS publicly checkable: the open code-and-data release at
-`https://github.com/gdpujee/bcrt-immune-metabolic-score`, tagged `v1.0.1`,
-contains `results/derived/locked_model.json` with exactly the
+What IS publicly checkable: the open code-and-data repository at
+`https://github.com/gdpujee/bcrt-immune-metabolic-score` contains
+`results/derived/locked_model.json` with exactly the
 SHA-256 recorded above (`e8f2e00c…917baf`, independently verifiable by anyone
-who clones that commit). The public release thus verifies the frozen parameter
-artifact and checksum; the original development timeline is documented by the
-authors' local history.
+who clones the repository). The public repository verifies the frozen parameter
+artifact and checksum; the current archived release and version DOI are recorded
+in `README.md` and `CITATION.cff`. The original development timeline is documented
+by the authors' local history.
 
 ---
 
